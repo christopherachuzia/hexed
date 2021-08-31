@@ -1,35 +1,40 @@
 const Chai = require('chai');
+const bcrypt = require('bcryptjs');
 
 const expect = Chai.expect;
 const assert = Chai.assert;
 
 const jwt =  require('jsonwebtoken')
 
-const {verifyToken, createUser, logInUser} = require('../auth');
+const {authenticateUser, createUser, logInUser} = require('../auth');
 
 require('dotenv').config()
 
 let req, res, next, token ;
 
+const hashed_password = bcrypt.hashSync('12345', 10);
+
 let mock_database = {
     data_records: [
-        {_id:'christopherachuzia@gmail.com', name:'Christopher', password: '12345'},
+        {name:'Christopher', _id:'christopherachuzia@gmail.com', email: 'christopherachuzia@gmail.com', password: hashed_password},
     ],
-    read:  (input) =>{
-        const {password, ...read_result} = data_records.find(data => input.email)
-        Promise.resolve({...read_result})
+    findOneUser:  function(input){
+        const value = this.data_records.find(data => data._id === input.email)
+        
+        return Promise.resolve(value)
     },
-    save: (input) => {
-        data_records = [...data_records, {...data}];
-        return Promise.resolve({name:data.name, _id: data.email, email: data.email})
-    }
+    saveOneUser: function(input){
+        this.data_records = [...this.data_records, {...input}];
+        return Promise.resolve({name:input.name, _id: input.email, email: input.email})
+    },
+
 }
 
-describe('VerifyToken Test', function(){
+describe('#authenticateUser() Test', function(){
     
-
+    let user;
     before(()=>{
-        const user = {
+        user = {
             name: "Christopher",
             _id: 'christopherachuzia@gmail.com',
             email: 'christopherachuzia@gmail.com'
@@ -43,9 +48,7 @@ describe('VerifyToken Test', function(){
         }
 
         res = {
-            json:(data) =>{
-                console.log('Server response:', data)
-            },
+            json:(data) => data,
         }
 
         next = ()=>{}
@@ -57,13 +60,12 @@ describe('VerifyToken Test', function(){
         }
     })
 
-    it("Should fail if user has no authentication token", function(){
-        verifyToken(req, res, next)
-        
+    it("Should fail if user has no authentication token", async function(){
+        await authenticateUser(req, res, next)
         expect(req.user_verified).to.equal(undefined)
     })
 
-    it("Should pass if user authentication is valid", function(){
+    it("Should pass if user authentication is valid", async function(){
 
         req = {
             headers:{
@@ -71,13 +73,13 @@ describe('VerifyToken Test', function(){
             }
         } 
 
-        verifyToken(req, res, next)
-
-        assert.deepEqual(req.user_verified, user)
+        await authenticateUser(req, res, next)
+        const {iat, ...user_verified_data} = req.user_verified;
+        assert.deepEqual(user_verified_data, user)
     })
 
-    it("Should fail if user authentication token is invalid", function(){
-        const invalid_token = 'jfkdijajHIHiHkhjads';
+    it("Should fail if user authentication token is invalid", async function(){
+        const invalid_token = 'jsu bdfsdjdjksald dljsa';
 
         req = {
             headers:{
@@ -85,24 +87,19 @@ describe('VerifyToken Test', function(){
             }
         }
 
-        verifyToken(req, res, next);
+        await authenticateUser(req, res, next);
         expect(req.user_verified).to.equal(undefined)
     })
+
 })
 
-describe('CreateUser Test', function(){
+describe('#createUser() Test', function(){
    
     before(() =>{
 
-        token = jwt.sign({
-            name: 'Jessica',
-            _id: 'jessicaibeanusi@gmail.com',
-            email: 'jessicaibeanusi@gmail.com'
-        }, process.env.SECRET_KEY);
-
         res = {
-            json:(data) =>{
-                client_response = data;
+            json:function(data){
+                this.client_response = data;
             },
 
             client_response: null
@@ -125,7 +122,6 @@ describe('CreateUser Test', function(){
 
         
         await createUser(req, res, mock_database)
-
         assert.deepEqual(res.client_response, {
             error: true,
             message: 'email already exist'
@@ -142,30 +138,35 @@ describe('CreateUser Test', function(){
             }
         }
 
-
+        
         await createUser(req, res, mock_database)
+
+        token = jwt.sign({
+            name: 'Jessica',
+            _id: 'jessicaibeanusi@gmail.com',
+            email: 'jessicaibeanusi@gmail.com'
+        }, process.env.SECRET_KEY);
 
         assert.deepEqual(res.client_response, {
             success: true,
-            message: 'user account created successfully',
             token
         })
     })
 })
 
 describe('LogInUser Test', function(){
+    let user;
     before(()=>{
-        const user = {
+        user = {
             name: "Christopher",
             _id: 'christopherachuzia@gmail.com',
             email: 'christopherachuzia@gmail.com'
         }
         
-        token = jwt.sign(user, process.env.SECRET_KEY);
 
         res = {
-            json:(data) =>{
-                client_response = data;
+            json:function(data){
+                this.client_response = data;
             },
 
             client_response: null
@@ -188,7 +189,7 @@ describe('LogInUser Test', function(){
 
         assert.deepEqual(res.client_response,{
             error: true,
-            message: 'Invalid email or password'
+            message: 'Invalid password'
         })
     })
 
@@ -217,6 +218,8 @@ describe('LogInUser Test', function(){
         }
 
         await logInUser(req, res, mock_database);
+
+        token = jwt.sign(user, process.env.SECRET_KEY);
 
         assert.deepEqual(res.client_response,{
             success: true,
