@@ -30,200 +30,202 @@ let mock_database = {
 
 }
 
-describe('#authenticateUser() Test', function(){
+describe('Authentication Test', function(){
+    describe('#authenticateUser() Test', function(){
     
-    let user;
-    before(()=>{
-        user = {
-            name: "Christopher",
-            _id: 'christopherachuzia@gmail.com',
-            email: 'christopherachuzia@gmail.com'
-        }
-        
-        token = jwt.sign(user, process.env.SECRET_KEY);
-
-        
-        req = {
-            headers: {}
-        }
-
-        res = {
-            json:(data) => data,
-        }
-
-        next = ()=>{}
-    })
-
-    afterEach(() =>{
-        req = {
-            headers: {}
-        }
-    })
-
-    it("Should fail if user has no authentication token", async function(){
-        await authenticateUser(req, res, next)
-        expect(req.user_verified).to.equal(undefined)
-    })
-
-    it("Should pass if user authentication is valid", async function(){
-
-        req = {
-            headers:{
-                authorization: `Bearer ${token}`
+        let user;
+        before(()=>{
+            user = {
+                name: "Christopher",
+                _id: 'christopherachuzia@gmail.com',
+                email: 'christopherachuzia@gmail.com'
             }
-        } 
-
-        await authenticateUser(req, res, next)
-        const {iat, ...user_verified_data} = req.user_verified;
-        assert.deepEqual(user_verified_data, user)
-    })
-
-    it("Should fail if user authentication token is invalid", async function(){
-        const invalid_token = 'jsu bdfsdjdjksald dljsa';
-
-        req = {
-            headers:{
-                authorization: `Bearer ${invalid_token}`
+            
+            token = jwt.sign(user, process.env.SECRET_KEY);
+    
+            
+            req = {
+                headers: {}
             }
-        }
-
-        await authenticateUser(req, res, next);
-        expect(req.user_verified).to.equal(undefined)
-    })
-
-})
-
-describe('#createUser() Test', function(){
-   
-    before(() =>{
-
-        res = {
-            json:function(data){
-                this.client_response = data;
-            },
-
-            client_response: null
-        }
-    })
-
-    afterEach(()=>{
-        res.client_response = null;
-    })
-
-    it('Should fail because email already exist', async function(){
-        
-        req = {
-            body:{
-                email:'christopherachuzia@gmail.com',
-                name: 'Paul Mike',
-                password: 'qwerty'
+    
+            res = {
+                json:(data) => data,
             }
-        }
-
-        
-        await createUser(req, res, mock_database)
-        assert.deepEqual(res.client_response, {
-            error: true,
-            message: 'email already exist'
+    
+            next = ()=>{}
         })
-    });
-
-    it('Should create a new user', async function(){
-
-        req = {
-            body:{
-                email:'jessicaibeanusi@gmail.com',
+    
+        afterEach(() =>{
+            req = {
+                headers: {}
+            }
+        })
+    
+        it("Should fail if user has no authentication token", async function(){
+            await authenticateUser(req, res, next)
+            expect(req.user_verified).to.equal(undefined)
+        })
+    
+        it("Should pass if user authentication is valid", async function(){
+    
+            req = {
+                headers:{
+                    authorization: `Bearer ${token}`
+                }
+            } 
+    
+            await authenticateUser(req, res, next)
+            const {iat, ...user_verified_data} = req.user_verified;
+            assert.deepEqual(user_verified_data, user)
+        })
+    
+        it("Should fail if user authentication token is invalid", async function(){
+            const invalid_token = 'jsu bdfsdjdjksald dljsa';
+    
+            req = {
+                headers:{
+                    authorization: `Bearer ${invalid_token}`
+                }
+            }
+    
+            await authenticateUser(req, res, next);
+            expect(req.user_verified).to.equal(undefined)
+        })
+    
+    })
+    
+    describe('#createUser() Test', function(){
+       
+        before(() =>{
+    
+            res = {
+                json:function(data){
+                    this.client_response = data;
+                },
+    
+                client_response: null
+            }
+        })
+    
+        afterEach(()=>{
+            res.client_response = null;
+        })
+    
+        it('Should fail because email already exist', async function(){
+            
+            req = {
+                body:{
+                    email:'christopherachuzia@gmail.com',
+                    name: 'Paul Mike',
+                    password: 'qwerty'
+                }
+            }
+    
+            
+            await createUser(req, res, mock_database)
+            assert.deepEqual(res.client_response, {
+                error: true,
+                message: 'email already exist'
+            })
+        });
+    
+        it('Should create a new user', async function(){
+    
+            req = {
+                body:{
+                    email:'jessicaibeanusi@gmail.com',
+                    name: 'Jessica',
+                    password: 'asdfgh'
+                }
+            }
+    
+            
+            await createUser(req, res, mock_database)
+    
+            token = jwt.sign({
                 name: 'Jessica',
-                password: 'asdfgh'
-            }
-        }
-
-        
-        await createUser(req, res, mock_database)
-
-        token = jwt.sign({
-            name: 'Jessica',
-            _id: 'jessicaibeanusi@gmail.com',
-            email: 'jessicaibeanusi@gmail.com'
-        }, process.env.SECRET_KEY);
-
-        assert.deepEqual(res.client_response, {
-            success: true,
-            token
+                _id: 'jessicaibeanusi@gmail.com',
+                email: 'jessicaibeanusi@gmail.com'
+            }, process.env.SECRET_KEY);
+    
+            assert.deepEqual(res.client_response, {
+                success: true,
+                token
+            })
         })
     })
-})
-
-describe('LogInUser Test', function(){
-    let user;
-    before(()=>{
-        user = {
-            name: "Christopher",
-            _id: 'christopherachuzia@gmail.com',
-            email: 'christopherachuzia@gmail.com'
-        }
-        
-
-        res = {
-            json:function(data){
-                this.client_response = data;
-            },
-
-            client_response: null
-        }
-    })
-
-    afterEach(()=>{
-        res.client_response = null;
-    })
-
-    it('Should fail to login due to incorrect credentials', async function(){
-        req = {
-            body:{
-                email: 'christopherachuzia@gmail.com',
-                password: '123455'
+    
+    describe('LogInUser Test', function(){
+        let user;
+        before(()=>{
+            user = {
+                name: "Christopher",
+                _id: 'christopherachuzia@gmail.com',
+                email: 'christopherachuzia@gmail.com'
             }
-        }
-
-        await logInUser(req, res, mock_database);
-
-        assert.deepEqual(res.client_response,{
-            error: true,
-            message: 'Invalid password'
+            
+    
+            res = {
+                json:function(data){
+                    this.client_response = data;
+                },
+    
+                client_response: null
+            }
         })
-    })
-
-    it('Should fail because email does not exist', async function(){
-        req = {
-            body:{
-                email: 'braincabone@yahoo.com',
-                password: '09876'
-            }
-        }
-
-        await logInUser(req, res, mock_database);
-
-        assert.deepEqual(res.client_response,{
-            error: true,
-            message: 'User email does not exist'
+    
+        afterEach(()=>{
+            res.client_response = null;
         })
-    })
-
-    it('Should login user', async function(){
-        req = {
-            body:{
-                email: 'christopherachuzia@gmail.com',
-                password: '12345'
+    
+        it('Should fail to login due to incorrect credentials', async function(){
+            req = {
+                body:{
+                    email: 'christopherachuzia@gmail.com',
+                    password: '123455'
+                }
             }
-        }
-
-        await logInUser(req, res, mock_database);
-
-        token = jwt.sign(user, process.env.SECRET_KEY);
-
-        assert.deepEqual(res.client_response,{
-            success: true,
-            token
+    
+            await logInUser(req, res, mock_database);
+    
+            assert.deepEqual(res.client_response,{
+                error: true,
+                message: 'Invalid password'
+            })
+        })
+    
+        it('Should fail because email does not exist', async function(){
+            req = {
+                body:{
+                    email: 'braincabone@yahoo.com',
+                    password: '09876'
+                }
+            }
+    
+            await logInUser(req, res, mock_database);
+    
+            assert.deepEqual(res.client_response,{
+                error: true,
+                message: 'User email does not exist'
+            })
+        })
+    
+        it('Should login user', async function(){
+            req = {
+                body:{
+                    email: 'christopherachuzia@gmail.com',
+                    password: '12345'
+                }
+            }
+    
+            await logInUser(req, res, mock_database);
+    
+            token = jwt.sign(user, process.env.SECRET_KEY);
+    
+            assert.deepEqual(res.client_response,{
+                success: true,
+                token
+            })
         })
     })
 })
