@@ -17,7 +17,7 @@ module.exports.borrowBook = async (borrowdata, db)=>{
             }
         }
 
-        const book = await db.readLibrary(borrowdata);
+        const book = await db.findOneBook(borrowdata);
         if(!book){
             return {
                 error: true,
@@ -55,7 +55,7 @@ module.exports.returnBook = async (returndata, db) =>{
             }
         }
 
-        const book = await db.readLibrary(returndata);
+        const book = await db.findOneBook(returndata);
 
         return await db.updateStores({
             action: 'return',

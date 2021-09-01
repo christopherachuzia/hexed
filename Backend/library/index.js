@@ -13,7 +13,7 @@ module.exports.getBookList = async (userdata, db) =>{
 
 module.exports.getLibraryContent = async (filter = null, db)=>{
     try{
-        return await db.readLibrary()
+        return await db.readLibrary(filter)
     }
     catch(err){
         console.log(err.message)

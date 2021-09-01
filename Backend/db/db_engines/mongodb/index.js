@@ -26,6 +26,17 @@ const sendError = (msg)=> {
     throw new Error(msg)
 }
 
+const createTextIndex = async () =>{
+    try{
+        const exist = await db().collection('available').indexExists("text")
+        if(!exist){
+            await db().collection('available').createIndex( { book_title : "text"} )
+        }
+    }
+    catch(err){
+        console.log('Error creating text index')
+    }
+}
 
 class MongoDBEngine extends DBInterface{
    
@@ -69,24 +80,42 @@ class MongoDBEngine extends DBInterface{
 
     }
 
-    async readLibrary(filterbook = null){
+    async findOneBook(book){
+        try{
+            await connectDB()
+            const value = await db().collection('available').findOne({
+                _id: book.bookid
+            })
+            
+            return value;
+        }
+        catch(err){
+            return sendError('Error finding book')
+        }
+    }
+
+    async readLibrary(search = null){
         try{
             await connectDB();
-            let value;
-            if(filterbook){
-                value = await db().collection('available').findOne({
-                    _id: filterbook._id
+            let cursor;
+            if(search){
+                await createTextIndex()
+                cursor =  await db().collection('available').find({
+                    $text: {$search : `"${search}"`},
+                    amount:{
+                        $gt: 0
+                    }
                 })
-                return value
+            }
+            else{
+                cursor = await db().collection('available').find({
+                    amount :{
+                        $gt: 0
+                    }
+                })
             }
         
-            const cursor = await db().collection('available').find({
-                amount :{
-                    $gt: 0
-                }
-            })
-
-            value = cursor.toArray()
+            const value = cursor.toArray()
 
             cursor.close()
 
@@ -103,9 +132,20 @@ class MongoDBEngine extends DBInterface{
             const {action, data} = payload;
             switch(action){
                 case 'add':
-                    db().collection('available')
+                    await db().collection('available').updateOne(
+                        {
+                            _id: data.book._id
+                        },
+                        {
+                           $inc: {amount:1} 
+                        },
+                        {
+                            upsert: true
+                        }
+                    )
                     break;
                 case 'delete':
+
                     break;
                 case 'borrow':
                     break;

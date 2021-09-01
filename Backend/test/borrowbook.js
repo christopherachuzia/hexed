@@ -5,7 +5,7 @@ const expect = Chai.expect;
 const assert = Chai.assert;
 
 const mock_database = require('./mockdatabase')
-const {borrowBook, returnBook} = require('../book');
+const {borrowBook} = require('../book');
 
 
 describe('Borrow Books Module',function(){

@@ -26,6 +26,7 @@ const sortReport = (report) =>{
 }
 
 module.exports = {
+
     updateStores: function(updatedata){
         return new Promise(resolve =>{
             setTimeout((updatedata)=>{
@@ -42,6 +43,25 @@ module.exports = {
                 }
                 resolve([...this.borrowed_list.filter(book => book.user_id === bookdata.user_id)])
             },400,updatedata)
+        })
+    },
+
+    findOneBook: function(book){
+        return new Promise((resolve, reject) =>{
+            setTimeout((book)=>{
+                if(book){
+                    if(book.present){
+                        resolve({
+                            _id: book.bookid,
+                            book_id: book.bookid,
+                            book_title: 'Test book'
+                        })
+                        return;
+                    }
+                    resolve(null)
+                    return
+                }
+            },100,book)
         })
     },
 
@@ -62,25 +82,16 @@ module.exports = {
         }
     },
 
-    readLibrary: function(filterdata = null){
+    readLibrary: function(search = null){
         return new Promise((resolve, reject) =>{
-            setTimeout((filterdata)=>{
-                if(filterdata){
-                    if(filterdata.present){
-                        resolve({
-                            _id: filterdata.bookid,
-                            book_id: filterdata.bookid,
-                            book_title: 'Test book'
-                        })
-                        return;
-                    }
-                    resolve(null)
-                    return
+            setTimeout((search)=>{
+                if(search){
+                    resolve([...this.book_available.filter(book => book.book_title === search)])
                 }
                 else{
                     resolve([...this.book_available])
                 }
-            },100,filterdata)
+            },100,search)
         })
     },
 
