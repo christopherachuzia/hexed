@@ -71,7 +71,8 @@ module.exports = {
             if(existing_user_data === undefined){
                 const hashed_password = bcrypt.hashSync(req.body.password, 10);
                 
-                const saved_user_data = await db.saveOneUser({...req.body, password:hashed_password})
+                const {password, ...other_user_data} = req.body;
+                const saved_user_data = await db.saveOneUser({...other_user_data, password:hashed_password})
                 const user_data_token = await signUserToken(saved_user_data)
                 
                 res.json({...user_data_token})

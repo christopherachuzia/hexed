@@ -26,17 +26,22 @@ const sortReport = (report) =>{
 }
 
 module.exports = {
-    updateStores: function(bookdata){
+    updateStores: function(updatedata){
         return new Promise(resolve =>{
-            setTimeout((bookdata)=>{
-                if(bookdata.return){
+            setTimeout((updatedata)=>{
+                const {action,data: bookdata} = updatedata;
+                if(action === 'return'){
                     this.borrowed_list = [...this.borrowed_list.filter(book => book._id !== bookdata._id)]
                 }
                 else{
-                    this.borrowed_list.push(bookdata)
+                    this.borrowed_list.push({
+                        _id: bookdata._id,
+                        book_id: bookdata.book_id,
+                        user_id: bookdata.user_id
+                    })
                 }
                 resolve([...this.borrowed_list.filter(book => book.user_id === bookdata.user_id)])
-            },400,bookdata)
+            },400,updatedata)
         })
     },
 

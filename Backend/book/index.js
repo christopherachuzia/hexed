@@ -25,7 +25,15 @@ module.exports.borrowBook = async (borrowdata, db)=>{
             }
         }
 
-        return await db.updateStores({...book, _id: `${book.book_id}_${borrowdata.userid}`, user_id: borrowdata.userid})
+        return await db.updateStores({
+            action: 'borrow',
+            data:{
+                book: {...book},
+                _id: `${book.book_id}_${borrowdata.userid}`,
+                book_id: book.book_id, 
+                user_id: borrowdata.userid
+            }
+        })
     }
     catch(err){
         console.log(err.message)
@@ -50,10 +58,13 @@ module.exports.returnBook = async (returndata, db) =>{
         const book = await db.readLibrary(returndata);
 
         return await db.updateStores({
-            ...book,
-            _id: `${book.book_id}_${returndata.userid}`,
-            user_id: returndata.userid, 
-            return: returndata.return
+            action: 'return',
+            data:{
+                book: {...book},
+                _id: `${book.book_id}_${returndata.userid}`,
+                book_id: book.book_id, 
+                user_id: returndata.userid, 
+            }
         })
         
     }
@@ -68,7 +79,12 @@ module.exports.returnBook = async (returndata, db) =>{
 
 module.exports.addBook = async (bookdata, db)=>{
     try{
-        return await db.saveBook(bookdata)
+        return await db.updateStores({
+            action: 'add',
+            data:{
+                book:{...bookdata}
+            }
+        })
     }
     catch(err){
         console.log(err.message)
@@ -81,7 +97,12 @@ module.exports.addBook = async (bookdata, db)=>{
 
 module.exports.removeBook = async (bookdata, db)=>{
     try{
-        return await db.deleteBook(bookdata)
+        return await db.updateStores({
+           action: 'delete', 
+           data:{
+               book:{...bookdata}
+           }
+        })
     }
     catch(err){
         console.log(err.message)
