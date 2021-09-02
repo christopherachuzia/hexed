@@ -17,7 +17,7 @@ module.exports.borrowBook = async (borrowdata, db)=>{
             }
         }
 
-        const book = await db.findOneBook(borrowdata);
+        const book = await db.findOneBook(borrowdata.bookid);
         if(!book){
             return {
                 error: true,
@@ -55,12 +55,24 @@ module.exports.returnBook = async (returndata, db) =>{
             }
         }
 
-        const book = await db.findOneBook(returndata);
+        const book = await db.findOneBorrowedBook(`${returndata.bookid}_${returndata.userid}`);
 
+        if(!book){
+            return {
+                error: true,
+                message: 'Book not in booklist'
+            }
+        }
+
+        const return_book = {
+            _id:book.book_id,
+            book_id:book.book_id,
+            book_title: book.book_title
+        }
         return await db.updateStores({
             action: 'return',
             data:{
-                book: {...book},
+                book: {...return_book},
                 _id: `${book.book_id}_${returndata.userid}`,
                 book_id: book.book_id, 
                 user_id: returndata.userid, 

@@ -46,22 +46,38 @@ module.exports = {
         })
     },
 
-    findOneBook: function(book){
+    findOneBook: function(bookid){
         return new Promise((resolve, reject) =>{
-            setTimeout((book)=>{
-                if(book){
-                    if(book.present){
-                        resolve({
-                            _id: book.bookid,
-                            book_id: book.bookid,
-                            book_title: 'Test book'
-                        })
-                        return;
-                    }
-                    resolve(null)
-                    return
+            setTimeout((bookid)=>{
+                if(bookid !== 'scrummaster2.0-2332234'){
+                    resolve({
+                        _id: bookid,
+                        book_id: bookid,
+                        book_title: 'Test book'
+                    })
+                    return;
                 }
-            },100,book)
+                resolve(null)
+                return
+            },100,bookid)
+        })
+    },
+
+    findOneBorrowedBook: function(bookid){
+        return new Promise((resolve, reject) =>{
+            setTimeout((bookid)=>{
+                if(bookid !== 'scrummaster2.0-2332234_christopherachuzia@gmail.com'){
+                    resolve({
+                        _id: bookid,
+                        book_id: bookid.split('_')[0],
+                        book_title: 'Test book',
+                        user_id: 'anyname@gmail.com'
+                    })
+                    return;
+                }
+                resolve(null)
+                return
+            },100,bookid)
         })
     },
 

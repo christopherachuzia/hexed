@@ -4,10 +4,7 @@ class DBInterface{
     async readBorrowedBook(filterbook = null){}
     async readLibrary(filterbook = null){}
     async findOneBook(book) {}
-    async saveBook(book){}
-    async deleteBook(book){}
-    async returnBook(book){}
-    async saveToBookList(book){}
+    async findOneBorrowedBook(book){}
     async updateStore(data){}
 }
 

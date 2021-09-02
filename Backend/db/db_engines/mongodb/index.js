@@ -1,3 +1,4 @@
+
 const DBInterface = require('../../dbinterface')
 
 const {MongoClient} = require('mongodb'); 
@@ -26,12 +27,177 @@ const sendError = (msg)=> {
     throw new Error(msg)
 }
 
+const addAvailableBook = async (book)=>{
+    try{
+        
+        await connectDB();
+        const {upsertedId: bookid} = await db().collection('available').updateOne(
+            {
+                _id: book._id
+            },
+            {
+                $set:{
+                    book_id: book.book_id,
+                    book_title: book.book_title
+                },
+                $inc: {amount:1},
+                
+            },
+            {
+                upsert: true
+            }
+        )
+    
+        return bookid
+    }
+    catch(err){
+        sendError('Error adding book')
+    }
+}
+
+const decreaseAvailableBook = async(id) =>{
+    try{
+        
+        await connectDB();
+        const {upsertedId: bookid} = await db().collection('available').updateOne(
+            {
+                _id: id
+            },
+            {
+                $inc: {amount:-1},
+                
+            }
+        )
+    
+        return bookid
+    }
+    catch(err){
+        sendError('Error decreasing available book')
+    }
+}
+
+const deleteAvailableBook = async(id)=>{
+    try{
+        await connectDB();
+        await db().collection('available').deleteOne(
+            {
+                _id: id
+            },
+        )
+        return true
+    }
+    catch(err){
+        sendError('Error deleting available book')
+    }
+}
+
+const addBorrowedBook = async (book)=>{
+    try{
+        
+        await connectDB();
+        const {insertedId: bookid} = await db().collection('borrowed').insertOne(
+            {
+                ...book
+            },
+        )
+    
+        return bookid
+    }
+    catch(err){
+        sendError('Error adding borrowed book')
+    }
+}
+
+const getBookList = async (userid)=>{
+    try{
+        const cursor = await db().collection('borrowed').find(
+            {user_id: userid}
+        )
+    
+        const book_list = await cursor.toArray();
+    
+        cursor.close();
+        
+        return book_list
+    }
+    catch(err){
+        sendError('Error getting user booklist')
+    }
+}
+
+const getReport = async ()=>{
+    try{
+        return await db().collection('borrowed').aggregate([
+            {
+                $group:
+                {
+                    _id: "$book_title",
+                    users: {$sum: 1} 
+                }
+            }
+        ])
+    }
+    catch(err){
+        sendError('Error getting borrowed report')
+    }
+}
+
+const deleteBorrowedBook = async(id)=>{
+    try{
+        await connectDB();
+        await db().collection('borrowed').deleteOne(
+            {
+                _id: id
+            },
+        )
+        return true
+    }
+    catch(err){
+        sendError('Error deleting borrowed book')
+    }
+}
+
+
+const borrowBook = async (data,amount) =>{
+    try{
+        const borrowed_book_id = await addBorrowedBook({
+            _id: data._id,
+            book_id: data.book_id,
+            book_title: data.book.book_title,
+            user_id: data.user_id
+        })
+
+        if(amount <= 1){
+            await deleteAvailableBook(data.book.book_id)
+        }
+        else{
+            await decreaseAvailableBook(data.book.book_id)
+        }
+        return borrowed_book_id
+    }
+    catch(err){
+        sendError('Error borrowing book')
+    }
+}
+
+const returnBook = async (data)=>{
+    try{
+        const returned_book_id = await addAvailableBook({
+            ...data.book
+        })
+
+        await deleteBorrowedBook(data._id)
+        
+        return returned_book_id
+    }
+    catch(err){
+        sendError('Error returning book')
+    }
+}
+
 const createTextIndex = async () =>{
     try{
-        const exist = await db().collection('available').indexExists("text")
-        if(!exist){
             await db().collection('available').createIndex( { book_title : "text"} )
-        }
     }
     catch(err){
         console.log('Error creating text index')
@@ -57,7 +223,7 @@ class MongoDBEngine extends DBInterface{
             return data
         }
         catch(err){
-            sendError('Error saving user')
+            sendError(err.message+', Error saving user')
         }
     }
 
@@ -72,25 +238,54 @@ class MongoDBEngine extends DBInterface{
             return value ? value : undefined;
         }
         catch(err){
-            sendError('Error finding user')
+            sendError(err.message+', Error finding user')
         }
     }
 
     async readBorrowedBook(filterbook = null){
+        try{
+            if('userid' in filterbook){
+                return await getBookList(filterbook.userid)
+            }
 
+            if('report' in filterbook){
+                const cursor = await getReport()
+                const report = await cursor.toArray()
+                cursor.close()
+                return report
+            }
+        }
+        catch(err){
+            sendError(err.message+', Error finding user')
+        }
+        
     }
 
-    async findOneBook(book){
+    async findOneBook(bookid){
         try{
             await connectDB()
             const value = await db().collection('available').findOne({
-                _id: book.bookid
+                _id: bookid
             })
             
             return value;
         }
         catch(err){
-            return sendError('Error finding book')
+            sendError(err.message+', Error finding available book')
+        }
+    }
+
+    async findOneBorrowedBook(bookid){
+        try{
+            await connectDB()
+            const value = await db().collection('borrowed').findOne({
+                _id: bookid
+            })
+            
+            return value;
+        }
+        catch(err){
+            sendError(err.message+', Error finding borrowed book')
         }
     }
 
@@ -115,14 +310,14 @@ class MongoDBEngine extends DBInterface{
                 })
             }
         
-            const value = cursor.toArray()
+            const value = await cursor.toArray()
 
             cursor.close()
 
             return value
         }
         catch(err){
-            sendError('Error reading library')
+            sendError(err.message+', Error reading library')
         }
         
     }
@@ -132,30 +327,29 @@ class MongoDBEngine extends DBInterface{
             const {action, data} = payload;
             switch(action){
                 case 'add':
-                    await db().collection('available').updateOne(
-                        {
-                            _id: data.book._id
-                        },
-                        {
-                           $inc: {amount:1} 
-                        },
-                        {
-                            upsert: true
-                        }
-                    )
-                    break;
+                    const bookid = await addAvailableBook(data.book)
+                    return await this.findOneBook(bookid);
                 case 'delete':
-
-                    break;
+                    return await deleteAvailableBook(data.book.book_id)
                 case 'borrow':
-                    break;
+                    const book_found = await this.findOneBook(data.book.book_id)
+
+                    if(!book_found) sendError('Book is not available');
+
+                    const borrowed_book_id = await borrowBook(data, book_found.amount)
+                    return await this.findOneBorrowedBook(borrowed_book_id)
                 case 'return':
-                    break;
+                    const borrowed_book_found = await this.findOneBorrowedBook(data._id)
+
+                    if(!borrowed_book_found) sendError('Book is not borrowed by user');
+                    const returned_book_id = await returnBook(data)
+                    return await this.findOneBook(data.book.book_id)
+                    
                 default: return Promise.reject('No supported action found')
             }
         }
         catch(err){
-            sendError('Error updating store')
+            sendError(err.message+', Error updating store')
         }
     }
 }

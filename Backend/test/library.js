@@ -15,7 +15,7 @@ describe('Library Module Test', function(){
             expect(booklist).to.be.empty;
         })
 
-        it('Should return user booklist', async function(){
+        it('Should return 2 books in user booklist', async function(){
             mock_database.loadBorrowedList([
                 {
                     _id: 'endtoendmochatest1232387463_christopherachuzia@gmail.com',
@@ -40,7 +40,7 @@ describe('Library Module Test', function(){
             expect(booklist).to.be.empty;
         })
 
-        it('Should return all borrowed book report', async function(){
+        it('Should return 3 books in borrowed report', async function(){
             mock_database.loadBorrowedList([
                 {
                     _id: 'endtoendmochatest1232387463_christopherachuzia@gmail.com',
@@ -79,7 +79,7 @@ describe('Library Module Test', function(){
             expect(librarycontent).to.be.empty;
         })
 
-        it('Should return all borrowed book report', async function(){
+        it('Should return 4 books available', async function(){
             mock_database.loadAvailableBooks([
                 {
                     _id: 'endtoendmochatest1232387463',
