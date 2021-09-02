@@ -17,7 +17,7 @@ const connectDB = async () => {
         } 
     }
     catch(err){
-        console.log(err.message)
+        sendError(err.message)
     }
 }
 
@@ -110,6 +110,7 @@ const addBorrowedBook = async (book)=>{
 
 const getBookList = async (userid)=>{
     try{
+        await connectDB();
         const cursor = await db().collection('borrowed').find(
             {user_id: userid}
         )
@@ -127,6 +128,7 @@ const getBookList = async (userid)=>{
 
 const getReport = async ()=>{
     try{
+        await connectDB();
         return await db().collection('borrowed').aggregate([
             {
                 $group:
@@ -138,6 +140,7 @@ const getReport = async ()=>{
         ])
     }
     catch(err){
+        console.log(err)
         sendError('Error getting borrowed report')
     }
 }
@@ -205,7 +208,7 @@ const createTextIndex = async () =>{
 }
 
 class MongoDBEngine extends DBInterface{
-   
+
     async saveOneUser(user){
         try{
             await connectDB();

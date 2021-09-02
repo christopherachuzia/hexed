@@ -75,7 +75,7 @@ describe('Library Module Test', function(){
     describe('#getLibraryContent() Test', function(){
         it('Should return empty library', async function(){
             mock_database.loadAvailableBooks([])
-            const librarycontent = await getLibraryContent(null,mock_database);
+            const librarycontent = await getLibraryContent(mock_database);
             expect(librarycontent).to.be.empty;
         })
 
@@ -106,7 +106,7 @@ describe('Library Module Test', function(){
                     amount: 1
                 }
             ])
-            const booklist = await getLibraryContent(null, mock_database);
+            const booklist = await getLibraryContent(mock_database);
             expect(booklist).to.have.lengthOf(4);
         })
     })

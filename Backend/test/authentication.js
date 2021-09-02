@@ -122,7 +122,9 @@ describe('Authentication Test', function(){
             }
     
             
-            await createUser(req, res, mock_database)
+            const handeler = createUser(mock_database)
+            await handeler(req,res)
+
             assert.deepEqual(res.client_response, {
                 error: true,
                 message: 'email already exist'
@@ -140,7 +142,8 @@ describe('Authentication Test', function(){
             }
     
             
-            await createUser(req, res, mock_database)
+            const handeler = createUser(mock_database)
+            await handeler(req,res)
     
             token = jwt.sign({
                 name: 'Jessica',
@@ -150,6 +153,7 @@ describe('Authentication Test', function(){
     
             assert.deepEqual(res.client_response, {
                 success: true,
+                isadmin: false,
                 token
             })
         })
@@ -186,7 +190,8 @@ describe('Authentication Test', function(){
                 }
             }
     
-            await logInUser(req, res, mock_database);
+            const handeler = logInUser(mock_database);
+            await handeler(req,res)
     
             assert.deepEqual(res.client_response,{
                 error: true,
@@ -202,7 +207,8 @@ describe('Authentication Test', function(){
                 }
             }
     
-            await logInUser(req, res, mock_database);
+            const handeler = logInUser(mock_database);
+            await handeler(req,res)
     
             assert.deepEqual(res.client_response,{
                 error: true,
@@ -218,12 +224,14 @@ describe('Authentication Test', function(){
                 }
             }
     
-            await logInUser(req, res, mock_database);
+            const handeler = logInUser(mock_database);
+            await handeler(req,res)
     
             token = jwt.sign(user, process.env.SECRET_KEY);
     
             assert.deepEqual(res.client_response,{
                 success: true,
+                isadmin: false,
                 token
             })
         })

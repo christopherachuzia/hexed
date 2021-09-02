@@ -1,4 +1,4 @@
-module.exports.getBookList = async (userdata, db) =>{
+module.exports.getBookList = async (userdata,db) =>{
     try{
         return await db.readBorrowedBook(userdata);
     }
@@ -6,12 +6,12 @@ module.exports.getBookList = async (userdata, db) =>{
         console.log(err.message);
         return {
             error: true,
-            message:'Internal error occoured'
+            message:err.message
         }
     }
 }
 
-module.exports.getLibraryContent = async (filter = null, db)=>{
+module.exports.getLibraryContent = async (db,filter = null)=>{
     try{
         return await db.readLibrary(filter)
     }
@@ -19,7 +19,7 @@ module.exports.getLibraryContent = async (filter = null, db)=>{
         console.log(err.message)
         return {
             error: true,
-            message:'Internal error occoured'
+            message: err.message
         }
     }
 }
