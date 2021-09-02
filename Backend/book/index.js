@@ -39,7 +39,7 @@ module.exports.borrowBook = async (borrowdata, db)=>{
         console.log(err.message)
         return {
             error:true,
-            message: 'Internal error occoured'
+            message: err.message
         }
     }
 }
@@ -51,7 +51,7 @@ module.exports.returnBook = async (returndata, db) =>{
         if(!containsBook(user_book_list,returndata.bookid)){
             return {
                 error: true,
-                message: 'Book not in you booklist and can not be removed'
+                message: 'Book not in your booklist and can not be returned'
             }
         }
 
@@ -84,7 +84,7 @@ module.exports.returnBook = async (returndata, db) =>{
         console.log(err.message)
         return {
             error:true,
-            message: 'Internal error occoured'
+            message: err.message
         }
     }
 }
@@ -102,7 +102,7 @@ module.exports.addBook = async (bookdata, db)=>{
         console.log(err.message)
         return {
             error:true,
-            message: 'Error adding book'
+            message: err.message+', Error adding book'
         }
     }
 }
@@ -120,7 +120,7 @@ module.exports.removeBook = async (bookdata, db)=>{
         console.log(err.message)
         return {
             error:true,
-            message: 'Error deleting book'
+            message: err.message+', Error deleting book'
         }
     }
 }

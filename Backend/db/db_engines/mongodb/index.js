@@ -87,7 +87,7 @@ const deleteAvailableBook = async(id)=>{
         return true
     }
     catch(err){
-        sendError('Error deleting available book')
+        sendError(err.message+', Error deleting available book')
     }
 }
 
@@ -346,7 +346,8 @@ class MongoDBEngine extends DBInterface{
 
                     if(!borrowed_book_found) sendError('Book is not borrowed by user');
                     const returned_book_id = await returnBook(data)
-                    return await this.findOneBook(data.book.book_id)
+                    // return await this.findOneBook(data.book.book_id)
+                    return await this.findOneBook(returned_book_id)
                     
                 default: return Promise.reject('No supported action found')
             }
