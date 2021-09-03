@@ -79,7 +79,7 @@ describe('Testing Reducers', function(){
 
     describe('#book() Test',function(){
         let bookdata
-        before(()=>{
+        beforeAll(()=>{
             bookdata={}
         })
 
@@ -103,7 +103,7 @@ describe('Testing Reducers', function(){
 
         it('Should update book',()=>{
             const action = {
-                type: C.ADD_BOOK,
+                type: C.UPDATE_BOOK,
                 value:{
                     _id: 'book1id',
                     book_id: 'book1id',
@@ -122,7 +122,7 @@ describe('Testing Reducers', function(){
 
     describe('#librarybook() Test',function(){
         let library;
-        before(()=>{
+        beforeAll(()=>{
             library = []
         })
 
@@ -181,6 +181,7 @@ describe('Testing Reducers', function(){
 
             library = librarybook(library,action);
             expect(library.length).toBe(2)
+            expect(library.some(book=>book._id === 'book2id')).toBeFalsy()
         })
 
         it('Should update book1id',()=>{
@@ -212,7 +213,7 @@ describe('Testing Reducers', function(){
 
     describe('#booklist() Test',function(){
         let mybooklist;
-        before(()=>{
+        beforeAll(()=>{
             mybooklist = []
         })
 
@@ -321,7 +322,7 @@ describe('Testing Reducers', function(){
 
     describe('#user() Test', function(){
         let userobject;
-        before(()=>{
+        beforeAll(()=>{
             userobject = {}
         })
 
@@ -347,7 +348,7 @@ describe('Testing Reducers', function(){
             }
             
             userobject = user(userobject, action)
-            expect(userobject.email).toEqual(undefined)
+            expect(userobject.email).toBeUndefined()
         })
     })
 
@@ -361,13 +362,13 @@ describe('Testing Reducers', function(){
             expect(addbook(true,action)).toBeFalsy()
         })
 
-        it('Should return false',()=>{
+        it('Should return true',()=>{
             const action = {
                 type: C.SHOW_ADD,
                 value: true
             }
 
-            expect(addbook(false,action)).toBeFalsy()
+            expect(addbook(false,action)).toBeTruthy()
         })
     })
 
@@ -381,13 +382,13 @@ describe('Testing Reducers', function(){
             expect(startdelete(true,action)).toBeFalsy()
         })
 
-        it('Should return false',()=>{
+        it('Should return true',()=>{
             const action = {
                 type: C.START_DELETE,
                 value: true
             }
 
-            expect(startdelete(false,action)).toBeFalsy()
+            expect(startdelete(false,action)).toBeTruthy()
         })
     })
 
@@ -401,13 +402,13 @@ describe('Testing Reducers', function(){
             expect(returnbook(true,action)).toBeFalsy()
         })
 
-        it('Should return false',()=>{
+        it('Should return true',()=>{
             const action = {
                 type: C.START_RETURN,
                 value: true
             }
 
-            expect(returnbook(false,action)).toBeFalsy()
+            expect(returnbook(false,action)).toBeTruthy()
         })
     })
 
@@ -421,13 +422,13 @@ describe('Testing Reducers', function(){
             expect(borrowbook(true,action)).toBeFalsy()
         })
 
-        it('Should return false',()=>{
+        it('Should return true',()=>{
             const action = {
                 type: C.START_BORROW_BOOK,
                 value: true
             }
 
-            expect(borrowbook(false,action)).toBeFalsy()
+            expect(borrowbook(false,action)).toBeTruthy()
         })
     })
     
