@@ -3,9 +3,12 @@ class DBInterface{
     async saveOneUser(user){}
     async readBorrowedBook(filterbook = null){}
     async readLibrary(filterbook = null){}
-    async findOneBook(book) {}
+    async findOneLibraryBook(book) {}
     async findOneBorrowedBook(book){}
-    async updateStore(data){}
+    async addToBorrowedBook(data){}
+    async addLibraryBook(data){}
+    async deleteLibraryBook(id){}
+    async returnToAvailableBook(data){}
 }
 
 module.exports = DBInterface

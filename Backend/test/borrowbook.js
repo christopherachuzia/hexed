@@ -40,8 +40,12 @@ describe('Borrow Books Module',function(){
                     }
             
             const user_add_book_response = await borrowBook(bookdata, mock_database);
-            expect(user_add_book_response).to.be.an('array')
-            user_add_book_response.should.have.lengthOf(1);
+            assert.deepEqual(user_add_book_response,{
+                _id: 'endtoendmochatest1232387463_christopherachuzia@gmail.com',
+                book_id: 'endtoendmochatest1232387463',
+                user_id: 'christopherachuzia@gmail.com',
+                book_title: 'test book'
+            })
         })
 
         it("Should fail and detect duplicate borrow", async function(){
@@ -67,10 +71,13 @@ describe('Borrow Books Module',function(){
                         present: true
                     }
             const user_add_book_response = await borrowBook(bookdata, mock_database);
-            expect(user_add_book_response).to.be.an('array')
-            user_add_book_response.should.have.lengthOf(2);
-            expect(user_add_book_response[0]._id).to.equal('endtoendmochatest1232387463_christopherachuzia@gmail.com')
-            expect(user_add_book_response[1]._id).to.equal('es6professional10090_christopherachuzia@gmail.com')
+            assert.deepEqual(user_add_book_response,{
+                _id: 'es6professional10090_christopherachuzia@gmail.com',
+                book_id: 'es6professional10090',
+                user_id: 'christopherachuzia@gmail.com',
+                book_title: 'test book'
+            })
+            
         })
 
         it("Should fail and detect borrow limit", async function(){

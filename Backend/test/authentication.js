@@ -153,6 +153,7 @@ describe('Authentication Test', function(){
     
             assert.deepEqual(res.client_response, {
                 success: true,
+                name: 'Jessica',
                 isadmin: false,
                 token
             })
@@ -231,6 +232,7 @@ describe('Authentication Test', function(){
     
             assert.deepEqual(res.client_response,{
                 success: true,
+                name: 'Christopher',
                 isadmin: false,
                 token
             })

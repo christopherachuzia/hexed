@@ -17,7 +17,7 @@ module.exports.borrowBook = async (borrowdata, db)=>{
             }
         }
 
-        const book = await db.findOneBook(borrowdata.bookid);
+        const book = await db.findOneLibraryBook(borrowdata.bookid);
         if(!book){
             return {
                 error: true,
@@ -25,14 +25,12 @@ module.exports.borrowBook = async (borrowdata, db)=>{
             }
         }
 
-        return await db.updateStores({
-            action: 'borrow',
-            data:{
-                book: {...book},
-                _id: `${book.book_id}_${borrowdata.userid}`,
-                book_id: book.book_id, 
-                user_id: borrowdata.userid
-            }
+
+        return await db.addToBorrowedBook({
+            _id: `${book.book_id}_${borrowdata.userid}`,
+            book_id: book.book_id, 
+            user_id: borrowdata.userid,
+            book_title: book.book_title,
         })
     }
     catch(err){
@@ -64,19 +62,11 @@ module.exports.returnBook = async (returndata, db) =>{
             }
         }
 
-        const return_book = {
-            _id:book.book_id,
-            book_id:book.book_id,
-            book_title: book.book_title
-        }
-        return await db.updateStores({
-            action: 'return',
-            data:{
-                book: {...return_book},
+        return await db.returnToAvailableBook({
                 _id: `${book.book_id}_${returndata.userid}`,
                 book_id: book.book_id, 
+                book_title: book.book_title,
                 user_id: returndata.userid, 
-            }
         })
         
     }
@@ -91,12 +81,14 @@ module.exports.returnBook = async (returndata, db) =>{
 
 module.exports.addBook = async (bookdata, db)=>{
     try{
-        return await db.updateStores({
-            action: 'add',
-            data:{
-                book:{...bookdata}
-            }
-        })
+        const bookname = bookdata.title.toLowerCase()
+        const data = {
+            _id: bookname.replace(/\s/g,''),
+            book_id: bookname.replace(/\s/g,''),
+            book_title: bookname,
+            amount: Number(bookdata.amount)
+        }
+        return await db.addLibraryBook(data)
     }
     catch(err){
         console.log(err.message)
@@ -107,14 +99,9 @@ module.exports.addBook = async (bookdata, db)=>{
     }
 }
 
-module.exports.removeBook = async (bookdata, db)=>{
+module.exports.deleteBook = async (bookid, db)=>{
     try{
-        return await db.updateStores({
-           action: 'delete', 
-           data:{
-               book:{...bookdata}
-           }
-        })
+        return await db.deleteLibraryBook(bookid)
     }
     catch(err){
         console.log(err.message)

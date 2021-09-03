@@ -31,24 +31,25 @@ const addAvailableBook = async (book)=>{
     try{
         
         await connectDB();
-        const {upsertedId: bookid} = await db().collection('available').updateOne(
+        const result = await db().collection('available').updateOne(
             {
-                _id: book._id
+                _id: book.book_id
             },
             {
                 $set:{
                     book_id: book.book_id,
                     book_title: book.book_title
                 },
-                $inc: {amount:1},
+                $inc: {amount:book.amount},
                 
             },
             {
                 upsert: true
             }
         )
-    
-        return bookid
+        
+        const {upsertedId: bookid}  = result
+        return result.upsertedCount ? bookid : book.book_id
     }
     catch(err){
         sendError('Error adding book')
@@ -91,7 +92,7 @@ const deleteAvailableBook = async(id)=>{
     }
 }
 
-const addBorrowedBook = async (book)=>{
+const saveBorrowedBook = async (book)=>{
     try{
         
         await connectDB();
@@ -133,10 +134,11 @@ const getReport = async ()=>{
             {
                 $group:
                 {
-                    _id: "$book_title",
+                    _id: "$book_id",
+                    titles: {$push: "$book_title"},
                     users: {$sum: 1} 
-                }
-            }
+                },
+            },
         ])
     }
     catch(err){
@@ -163,18 +165,18 @@ const deleteBorrowedBook = async(id)=>{
 
 const borrowBook = async (data,amount) =>{
     try{
-        const borrowed_book_id = await addBorrowedBook({
+        const borrowed_book_id = await saveBorrowedBook({
             _id: data._id,
             book_id: data.book_id,
-            book_title: data.book.book_title,
+            book_title: data.book_title,
             user_id: data.user_id
         })
 
         if(amount <= 1){
-            await deleteAvailableBook(data.book.book_id)
+            await deleteAvailableBook(data.book_id)
         }
         else{
-            await decreaseAvailableBook(data.book.book_id)
+            await decreaseAvailableBook(data.book_id)
         }
         return borrowed_book_id
     }
@@ -186,7 +188,7 @@ const borrowBook = async (data,amount) =>{
 const returnBook = async (data)=>{
     try{
         const returned_book_id = await addAvailableBook({
-            ...data.book
+            ...data, amount: 1
         })
 
         await deleteBorrowedBook(data._id)
@@ -198,14 +200,6 @@ const returnBook = async (data)=>{
     }
 }
 
-const createTextIndex = async () =>{
-    try{
-            await db().collection('available').createIndex( { book_title : "text"} )
-    }
-    catch(err){
-        console.log('Error creating text index')
-    }
-}
 
 class MongoDBEngine extends DBInterface{
 
@@ -264,7 +258,7 @@ class MongoDBEngine extends DBInterface{
         
     }
 
-    async findOneBook(bookid){
+    async findOneLibraryBook(bookid){
         try{
             await connectDB()
             const value = await db().collection('available').findOne({
@@ -297,9 +291,8 @@ class MongoDBEngine extends DBInterface{
             await connectDB();
             let cursor;
             if(search){
-                await createTextIndex()
                 cursor =  await db().collection('available').find({
-                    $text: {$search : `"${search}"`},
+                    book_title: {$regex : search, $options: 'i'},
                     amount:{
                         $gt: 0
                     }
@@ -323,37 +316,52 @@ class MongoDBEngine extends DBInterface{
             sendError(err.message+', Error reading library')
         }
         
-    }
+    } 
 
-    async updateStore(payload){
+    async addToBorrowedBook(data){
         try{
-            const {action, data} = payload;
-            switch(action){
-                case 'add':
-                    const bookid = await addAvailableBook(data.book)
-                    return await this.findOneBook(bookid);
-                case 'delete':
-                    return await deleteAvailableBook(data.book.book_id)
-                case 'borrow':
-                    const book_found = await this.findOneBook(data.book.book_id)
+            const book_found = await this.findOneLibraryBook(data.book_id)
 
-                    if(!book_found) sendError('Book is not available');
+            if(!book_found) sendError('Book is not available');
 
-                    const borrowed_book_id = await borrowBook(data, book_found.amount)
-                    return await this.findOneBorrowedBook(borrowed_book_id)
-                case 'return':
-                    const borrowed_book_found = await this.findOneBorrowedBook(data._id)
-
-                    if(!borrowed_book_found) sendError('Book is not borrowed by user');
-                    const returned_book_id = await returnBook(data)
-                    // return await this.findOneBook(data.book.book_id)
-                    return await this.findOneBook(returned_book_id)
-                    
-                default: return Promise.reject('No supported action found')
-            }
+            const borrowed_book_id = await borrowBook(data, book_found.amount)
+            return await this.findOneBorrowedBook(borrowed_book_id)
         }
         catch(err){
-            sendError(err.message+', Error updating store')
+            sendError(err.message+', Error adding to borrowed list')
+        }
+    }
+
+    async deleteLibraryBook(id){
+        try{
+            return await deleteAvailableBook(id)
+        }
+        catch(err){
+            sendError(err.message+', Could not delete book')
+        }
+    }
+
+    async addLibraryBook(data){
+        try{
+            const bookid = await addAvailableBook(data)
+            return await this.findOneLibraryBook(bookid);
+        }
+        catch(err){
+            sendError(err.message+', Could not add book')
+        }
+    }
+
+    async returnToAvailableBook(data){
+        try{
+            const borrowed_book_found = await this.findOneBorrowedBook(data._id)
+
+            if(!borrowed_book_found) sendError('Book is not borrowed by user');
+            const returned_book_id = await returnBook(data)
+            
+            return await this.findOneLibraryBook(returned_book_id)
+        }
+        catch(err){
+            sendError(err.message+', Could not return book')
         }
     }
 }

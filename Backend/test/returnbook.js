@@ -36,11 +36,11 @@ describe('Return Books Module',function(){
                         present: true,
                         return: true
                     }
-            const user_add_book_response = await returnBook(bookdata, mock_database);
-            expect(user_add_book_response).to.be.an('object')
-            assert.deepEqual(user_add_book_response,{
+            const user_return_book_response = await returnBook(bookdata, mock_database);
+            expect(user_return_book_response).to.be.an('object')
+            assert.deepEqual(user_return_book_response,{
                 error: true,
-                message: 'Book not in you booklist and can not be removed'
+                message: 'Book not in your booklist and can not be returned'
             });
         })
 
@@ -52,10 +52,16 @@ describe('Return Books Module',function(){
                         present: true,
                         return: true
                     }
-            const user_add_book_response = await returnBook(bookdata, mock_database);
-            expect(user_add_book_response).to.be.an('array')
-            user_add_book_response.should.have.lengthOf(1);
-            expect(user_add_book_response[0]._id).to.equal('endtoendmochatest1232387463_christopherachuzia@gmail.com')
+            const user_return_book_response = await returnBook(bookdata, mock_database);
+            assert.deepEqual(user_return_book_response,{
+                _id: 'es6professional10090',
+                book_id: 'es6professional10090',
+                book_title: 'test book',
+                amount: 2
+            })
+            // expect(user_return_book_response).to.be.an('array')
+            // user_return_book_response.should.have.lengthOf(1);
+            // expect(user_return_book_response[0]._id).to.equal('endtoendmochatest1232387463_christopherachuzia@gmail.com')
         })
     })
 })

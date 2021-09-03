@@ -5,9 +5,16 @@ const {authenticateUser} = require('../../auth')
 
 const {getLibraryContent, getBookList} = require('../../library')
 
-const {borrowBook, returnBook, addBook, removeBook} = require('../../book')
+const {borrowBook, returnBook, addBook, deleteBook} = require('../../book')
 
 const db = require('../../dbinstance');
+
+const notAdmin = (res)=>{
+    res.json({
+        error: true,
+        message: 'You do not have admin access'
+    })
+}
 
 router.get('/contents', async(req,res) =>{
     try{
@@ -34,8 +41,9 @@ router.get('/reports', authenticateUser, async(req,res) =>{
                 reports
             })
         }
-        
-        throw new Error('You do not have admin access')
+        else{
+            notAdmin(res)
+        }
     }
     catch(err){
         res.json({
@@ -63,13 +71,15 @@ router.get('/booklist', authenticateUser, async(req,res) =>{
 router.post('/borrow', authenticateUser, async (req,res) =>{
     try{
        const book_borrowed = await borrowBook({...req.body},db.getInstance())
-       const remainder_available = await db.getInstance().findOneBook(book_borrowed.book_id)
+       const remainder_available = await db.getInstance().findOneLibraryBook(book_borrowed.book_id)
        
+       
+
        if(remainder_available){
-            req.io.emit('update-client-library', {book:remainder_available})
+            req.app.io.emit('update-client-library', {book:remainder_available})
        }
        else{
-            req.io.emit('remove-from-client', {book: remainder_available})
+            req.app.io.emit('remove-from-client', {book: remainder_available})
        }
        
        res.json({
@@ -87,7 +97,7 @@ router.post('/borrow', authenticateUser, async (req,res) =>{
 router.post('/returnbook', authenticateUser, async (req,res) =>{
     try{
        const book_returned = await returnBook({...req.body},db.getInstance())
-       req.io.emit('update-client-library', {book: book_returned})
+       req.app.io.emit('update-client-library', {book: book_returned})
        res.json({
             book: book_returned 
        })
@@ -105,13 +115,14 @@ router.post('/addbook', authenticateUser, async (req,res) =>{
 
         if(req.user_verified.isadmin){
             const newbook = await addBook({...req.body},db.getInstance())
-            req.io.emit('update-client-library', {book: newbook})
+            req.app.io.emit('update-client-library', {book: newbook})
             res.json({
                 book: newbook
             })
         }
-        
-        throw new Error('You do not have admin access')
+        else{
+            notAdmin(res)
+        }
     }
     catch(err){
         res.json({
@@ -125,17 +136,19 @@ router.delete('/delete/:book', authenticateUser, async (req,res) =>{
     try{
 
         if(req.user_verified.isadmin){
-            const book_deleted = await removeBook({book_id: req.params.book},db.getInstance())
+            const book_deleted = await deleteBook(req.params.book,db.getInstance())
             
             
-            req.io.emit('remove-from-client', {book: {book_id: book}})
+            req.app.io.emit('remove-from-client', req.params.book)
             
             res.json({
-                book: {book_id: book}
+                book: req.params.book
             })
         }
+        else{
+            notAdmin(res)
+        }
         
-        throw new Error('You do not have admin access')
     }
     catch(err){
         res.json({

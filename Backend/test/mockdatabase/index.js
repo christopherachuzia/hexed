@@ -46,14 +46,43 @@ module.exports = {
         })
     },
 
-    findOneBook: function(bookid){
-        return new Promise((resolve, reject) =>{
+    returnToAvailableBook: function(bookdata){
+        return Promise.resolve({
+            _id: bookdata.book_id,
+            book_id: bookdata.book_id,
+            book_title: bookdata.book_title,
+            amount: 2
+        })
+    },
+
+    addToBorrowedBook: function(bookdata){
+        return new Promise(resolve =>{
+            
+
+            this.borrowed_list.push({
+                _id: bookdata._id,
+                book_id: bookdata.book_id,
+                user_id: bookdata.user_id,
+                book_title: bookdata.book_title,
+            })
+
+            resolve({
+                _id: bookdata._id,
+                book_id: bookdata.book_id,
+                user_id: bookdata.user_id,
+                book_title: bookdata.book_title,
+            })
+        })
+    },
+
+    findOneLibraryBook: function(bookid){
+        return new Promise(resolve =>{
             setTimeout((bookid)=>{
                 if(bookid !== 'scrummaster2.0-2332234'){
                     resolve({
                         _id: bookid,
                         book_id: bookid,
-                        book_title: 'Test book'
+                        book_title: 'test book'
                     })
                     return;
                 }
@@ -64,13 +93,13 @@ module.exports = {
     },
 
     findOneBorrowedBook: function(bookid){
-        return new Promise((resolve, reject) =>{
+        return new Promise(resolve =>{
             setTimeout((bookid)=>{
                 if(bookid !== 'scrummaster2.0-2332234_christopherachuzia@gmail.com'){
                     resolve({
                         _id: bookid,
                         book_id: bookid.split('_')[0],
-                        book_title: 'Test book',
+                        book_title: 'test book',
                         user_id: 'anyname@gmail.com'
                     })
                     return;
@@ -99,7 +128,7 @@ module.exports = {
     },
 
     readLibrary: function(search = null){
-        return new Promise((resolve, reject) =>{
+        return new Promise(resolve =>{
             setTimeout((search)=>{
                 if(search){
                     resolve([...this.book_available.filter(book => book.book_title === search)])
@@ -109,6 +138,29 @@ module.exports = {
                 }
             },100,search)
         })
+    },
+
+    addLibraryBook: function(bookdata){
+        return new Promise(resolve =>{
+            const book_exist = this.book_available.some(book => book._id === bookdata._id)
+            if(book_exist){
+                const book = this.book_available.find(book => book._id === bookdata._id);
+                book.amount = book.amount + bookdata.amount;
+
+                resolve(book)
+                return;
+            }
+            this.book_available.push(bookdata)
+            resolve(bookdata)
+        })
+    },
+
+    deleteLibraryBook: function(id){
+        if(this.book_available.some(book => book._id === id)){
+            this.book_available = [...this.book_available.filter(book => book._id !== id)]
+            return Promise.resolve(true)
+        }
+        return Promise.resolve(false)
     },
 
     loadBorrowedList: function(borrowbooks){

@@ -31,6 +31,7 @@ function signUserToken(user){
 
             resolve({
                 success: true,
+                name: user.name,
                 isadmin: user.isadmin ? true : false,
                 token
             })
