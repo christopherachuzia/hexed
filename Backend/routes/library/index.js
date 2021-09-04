@@ -98,8 +98,9 @@ router.post('/returnbook', authenticateUser, async (req,res) =>{
     try{
        const book_returned = await returnBook({...req.body},db.getInstance())
        req.app.io.emit('update-client-library', {book: book_returned})
+       const {bookid: _id, userid: user_id}
        res.json({
-            book: book_returned 
+            book: {_id}
        })
     }
     catch(err){

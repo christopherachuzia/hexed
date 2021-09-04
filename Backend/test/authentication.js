@@ -154,6 +154,7 @@ describe('Authentication Test', function(){
             assert.deepEqual(res.client_response, {
                 success: true,
                 name: 'Jessica',
+                email: 'jessicaibeanusi@gmail.com',
                 isadmin: false,
                 token
             })
@@ -233,6 +234,7 @@ describe('Authentication Test', function(){
             assert.deepEqual(res.client_response,{
                 success: true,
                 name: 'Christopher',
+                email: 'christopherachuzia@gmail.com',
                 isadmin: false,
                 token
             })

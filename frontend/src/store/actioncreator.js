@@ -4,13 +4,21 @@ import DBService from '../utils/DBService'
 
 
 export const loadLibraryContent = () =>{
-    return () =>{
+    return (dispatch) =>{
+        dispatch({
+            type: C.START_LOADING,
+            value: true
+        })
         return DBService.getContent()
     }
 }
 
 export const searchBook = value =>{
-    return () =>{
+    return (dispatch) =>{
+        dispatch({
+            type: C.START_LOADING,
+            value: true
+        })
         return DBService.getContent(value)
     }
 }
@@ -47,7 +55,7 @@ export const borrowLibraryBook = (userid, bookid)=>{
             type: C.START_BORROW_BOOK,
             value: true
         })
-        return DBService.getReport({userid, bookid})
+        return DBService.borrowFromLibrary({userid, bookid})
     }
 }
 
@@ -101,5 +109,10 @@ export const showLogin = value=>{
     }
 }
 
-
+export const logOutUser = ()=>{
+    return{
+        type: C.UPDATE_USER,
+        value: {}
+    }
+}
 

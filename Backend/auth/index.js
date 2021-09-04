@@ -32,6 +32,7 @@ function signUserToken(user){
             resolve({
                 success: true,
                 name: user.name,
+                email: user.email,
                 isadmin: user.isadmin ? true : false,
                 token
             })

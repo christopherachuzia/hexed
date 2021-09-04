@@ -1,7 +1,7 @@
 import axios from 'axios'
 const URI = 'http://localhost:5000'
 
-class DBService {
+export default class DBService {
     static getContent(search = null){
         return axios.get(`${URI}/api/library/contents`,{
             params:{search}
@@ -10,16 +10,16 @@ class DBService {
 
     static logIn(formdata){
         return axios.post(`${URI}/api/auth/login`,{
-            email: formadata.email,
-            password: formadata.password
+            email: formdata.email,
+            password: formdata.password
         })
     }
 
     static createAccount(formdata){
         return axios.post(`${URI}/api/auth/createuser`,{
-            email: formadata.email,
+            email: formdata.email,
             name: formdata.name,
-            password: formadata.password
+            password: formdata.password
         })
     }
 
@@ -39,7 +39,7 @@ class DBService {
         })
     }
 
-    static borrowLibraryBook(formdata){
+    static borrowFromLibrary(formdata){
         return axios.post(`${URI}/api/library/borrow`,{
             ...formdata
         },{

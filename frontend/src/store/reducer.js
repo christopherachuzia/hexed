@@ -34,6 +34,7 @@ export const book = (state = {}, action) =>{
     }
 }
 
+
 export const librarybook = (state = [], action) =>{
     switch(action.type){
         case C.ADD_BOOK:
@@ -50,11 +51,19 @@ export const librarybook = (state = [], action) =>{
 }
 
 
+export const myborrowedbook = (state = {}, action) =>{
+    switch(action.type){
+        case C.BORROW_BOOK:
+            return {...action.value}
+        default: return state
+    }
+}
+
 export const booklist = (state = [], action) =>{
     switch(action.type){
-        case C.ADD_BOOK:
-            return [...state, book({},action)]
-        case C.DELETE_BOOK:
+        case C.BORROW_BOOK:
+            return [...state, myborrowedbook({},action)]
+        case C.RETURN_BOOK:
             const newstate = [...state.filter(bookdata => bookdata._id !== action.value._id)]
             return [...newstate]
         case C.LOAD_BOOKLIST:
@@ -116,6 +125,14 @@ export const returnbook = (state = false, action)=>{
 export const borrowbook = (state = false, action) =>{
     switch(action.type){
         case C.START_BORROW_BOOK:
+            return action.value
+        default: return state
+    }
+}
+
+export const loadinglibrary = (state = false, action) =>{
+    switch(action.type){
+        case C.START_LOADING:
             return action.value
         default: return state
     }

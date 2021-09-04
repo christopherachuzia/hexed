@@ -11,7 +11,8 @@ const state = {
     startdelete: false,
     startcreateaccount: false,
     borrowbook: false,
-    showcreateaccount: false
+    showcreateaccount: false,
+    loadinglibrary: false
 }
 
 export default state

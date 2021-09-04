@@ -1,24 +1,19 @@
-import logo from './logo.svg';
 import './App.css';
+import {Route,Switch} from 'react-router-dom'
+import booklist from './components/container/booklist'
+import library from './components/container/library'
+import reports from './components/container/reports'
+import ProtectedRoute from './components/customroutes'
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    <Switch>
+      <Route exact path='/' component={library}></Route>
+      <Route exact path='/booklist' component={booklist}></Route>
+      <ProtectedRoute path='/report' component={reports}/>
+    </Switch>
   );
 }
 
