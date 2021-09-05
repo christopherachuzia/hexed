@@ -13,7 +13,10 @@ const state = {
     borrowbook: false,
     showcreateaccount: false,
     loading: true,
-    popupscreen: -1
+    popupscreen: -1,
+    loadinglibrary: true,
+    loadingreport: true,
+    loadingbooklist: true
 }
 
 export default state

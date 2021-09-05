@@ -97,7 +97,7 @@ describe('Store Tester',()=>{
 
             axios.post.mockResolvedValue(res);
 
-            const userdata = await store.dispatch(loginUser('christopherachuzia@gmail.com','123456'))
+            const userdata = await store.dispatch(loginUser({email:'christopherachuzia@gmail.com',password:'123456'}))
             
             store.dispatch({
                 type: C.UPDATE_USER,
@@ -136,7 +136,7 @@ describe('Store Tester',()=>{
             }
 
             axios.post.mockResolvedValue(res);
-            const userdata = await store.dispatch(createNewUser('christopherachuzia@gmail.com','Achuzia Christopher','123456'))
+            const userdata = await store.dispatch(createNewUser({email:'christopherachuzia@gmail.com',name:'Achuzia Christopher',password:'123456'}))
 
             store.dispatch({
                 type: C.UPDATE_USER,

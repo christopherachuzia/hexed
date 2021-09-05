@@ -11,7 +11,8 @@ const mapStateToProps = state =>{
         screen: state.popupscreen,
         loading: state.loadinglibrary,
         user: state.user,
-        bookdata: state.booklist
+        bookdata: state.booklist,
+        loadbooklist: state.loadingbooklist,
     }
 }
 

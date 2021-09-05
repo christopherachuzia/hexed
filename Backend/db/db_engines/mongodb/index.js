@@ -309,7 +309,6 @@ class MongoDBEngine extends DBInterface{
             const value = await cursor.toArray()
 
             cursor.close()
-
             return value
         }
         catch(err){

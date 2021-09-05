@@ -5,7 +5,6 @@ const Searchbox = ({searchBook})=>(
         <div className='search-box'>
             <input className='search-textfield' placeholder='Search Book...' onInput={(e)=>{
                 e.preventDefault();
-                console.log(e.target.value)
                 const searchdata = e.target.value
                 searchBook(searchdata)
             }}/>

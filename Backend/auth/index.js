@@ -45,8 +45,9 @@ module.exports = {
 
     authenticateUser: async function(req, res, next){
         try{
+            
             const bearer_header =  req.headers['authorization'];
-        
+            
             if( bearer_header !== undefined ){
                 const token = bearer_header.split(' ')[1];
                

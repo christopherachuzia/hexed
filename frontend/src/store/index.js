@@ -15,15 +15,19 @@ import {
     returnbook,
     borrowbook,
     loading,
-    popupscreen
+    popupscreen,
+    loadinglibrary,
+    loadingreport,
+    loadingbooklist
 } from './reducer'
 
+import {saveState as saveStateMiddleware} from './middleware'
 import state from './initialstate'
 
 import thunk from 'redux-thunk'
 
 const storeFactory = (initialstate = state) =>(
-    applyMiddleware(thunk)(createStore)(
+    applyMiddleware(thunk,saveStateMiddleware)(createStore)(
         combineReducers({
             startlogin,
             book,
@@ -39,7 +43,10 @@ const storeFactory = (initialstate = state) =>(
             returnbook,
             borrowbook,
             loading,
-            popupscreen
+            popupscreen,
+            loadinglibrary,
+            loadingreport,
+            loadingbooklist
         }),
         localStorage['redux-store'] ? JSON.parse(localStorage['redux-store']) : initialstate
     )

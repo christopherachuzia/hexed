@@ -5,13 +5,18 @@ import Usernav from './usernav';
 import Visitor from './visitor';
 import { withRouter } from 'react-router';
 
-const Navcontent = ({location, user,showCreateAccount,showLogin,showAddBook,logOutUser,searchBook})=>(
+const Navcontent = ({location, history, user, showCreateAccount,
+    showLogin,showAddBook,logOutUser,searchBook,
+    showHome, showReports, showBooklist})=>(
     <div>
         <div>
             {
                 // localStorage['user-token'] ?
                 user.name ?
-                <Usernav user={user} showAddBook={showAddBook} logOutUser={logOutUser}/> 
+                <Usernav user={user} history={history} 
+                showAddBook={showAddBook} logOutUser={logOutUser}
+                showHome={showHome} showReports={showReports}
+                showBooklist={showBooklist}/> 
                 : <Visitor showCreateAccount={showCreateAccount} showLogin={showLogin}/>
             }
         </div>

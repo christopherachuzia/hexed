@@ -8,13 +8,13 @@ const db = require('./dbinstance');
 
 const app = express()
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5050
 
 process.on('uncaughtException',(err)=>{
     console.log('Application Crashed', err)
 })
 
-
+ 
 start()
 
 async function start(){
@@ -34,10 +34,20 @@ async function start(){
             console.log(`App listening on port ${PORT}`);
         })
 
-        const io = require('socket.io')(http_server)
+        const io = require('socket.io')(http_server,{
+            path: '/socket.io'
+        })
         
-        io.sockets.on('connection',(socket)=>{
-            console.log('Client Connected')
+        io.on('connection',(socket)=>{
+            console.log('connected', socket.id)
+            socket.emit('welcome',1)
+            socket.on('refresh',(data)=>{
+                console.log('Hii there ',data)
+            })
+
+            socket.on("disconnect",()=>{
+                console.log('client '+socket.id+' disconnected')
+            })
         })
 
         app.io = io;

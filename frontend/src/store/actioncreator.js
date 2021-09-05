@@ -6,30 +6,30 @@ import DBService from '../utils/DBService'
 export const loadLibraryContent = () =>{
     return (dispatch) =>{
         dispatch({
-            type: C.START_LOADING,
-            value: true
+            type: C.STAT_LIBRARY_LOAD,
+            value: false
         })
-        return DBService.getContent()
+       return DBService.getContent()
     }
 }
 
 export const searchBook = value =>{
     return (dispatch) =>{
         dispatch({
-            type: C.START_LOADING,
-            value: true
+            type: C.STAT_LIBRARY_LOAD,
+            value: false
         })
         return DBService.getContent(value)
     }
 }
 
-export const loginUser = (email,password)=>{
+export const loginUser = ({email,password})=>{
     return ()=>{
         return DBService.logIn({email, password})
     }
 }
 
-export const createNewUser = (email, name, password)=>{
+export const createNewUser = ({email, name, password})=>{
     return ()=>{
         return DBService.createAccount({email, name, password})
     }

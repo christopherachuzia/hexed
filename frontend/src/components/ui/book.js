@@ -8,12 +8,12 @@ const Book = ({book, user, borrowBook = f => f})=>(
             <li className='text-capitalize'><span className='small-font' >Available copies:</span> <b>{book.amount}</b></li>
             <li>
                 <div className='overlay-btn-holder'>
-                    <button className='borrow-btn' onclick ={()=> {
+                    <button className='borrow-btn' onClick ={()=> {
                         borrowBook(user.email,book._id)
                     }}>Borrow Book</button>
 
                     {
-                        user.isadmin ? <li><button className='delete-btn-fill-1'>Delete</button></li> : <></>
+                        user.isadmin ? <button className='delete-btn-fill-1'>Delete</button> : <></>
                     }
                 </div>
             </li>

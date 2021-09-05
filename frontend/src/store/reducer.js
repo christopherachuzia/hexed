@@ -146,3 +146,28 @@ export const popupscreen = (state = -1, action) =>{
         default: return state
     }
 }
+
+
+export const loadinglibrary = (state = false, action)=>{
+    switch(action.type){
+        case C.STAT_LIBRARY_LOAD:
+            return action.value
+        default: return state
+    }
+}
+
+export const loadingreport = (state = false, action)=>{
+    switch(action.type){
+        case C.START_REPORT_LOAD:
+            return action.value
+        default: return state
+    }
+}
+
+export const loadingbooklist = (state = false, action)=>{
+    switch(action.type){
+        case C.START_BOOKLIST_LOAD:
+            return action.value
+        default: return state
+    }
+}

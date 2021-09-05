@@ -16,7 +16,7 @@ module.exports.getLibraryContent = async (db,filter = null)=>{
         return await db.readLibrary(filter)
     }
     catch(err){
-        console.log(err.message)
+        console.log('err',err.message)
         return {
             error: true,
             message: err.message

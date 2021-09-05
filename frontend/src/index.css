@@ -246,6 +246,9 @@ input:focus{
   font-weight: 600;
   margin: .6rem .42rem .5rem .42rem;
   text-decoration: none;
+  border: none;
+  background-color: transparent;
+  border-radius: 0px;
   border-bottom: 2px solid rgb(31, 140, 212);
   color: rgb(31, 140, 212);
 }

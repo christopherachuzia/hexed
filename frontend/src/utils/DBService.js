@@ -1,5 +1,5 @@
 import axios from 'axios'
-const URI = 'http://localhost:5000'
+const URI = 'http://localhost:5050'
 
 export default class DBService {
     static getContent(search = null){
@@ -10,15 +10,15 @@ export default class DBService {
 
     static logIn(formdata){
         return axios.post(`${URI}/api/auth/login`,{
-            email: formdata.email,
+            email: formdata.email.toLowerCase(),
             password: formdata.password
         })
     }
 
     static createAccount(formdata){
         return axios.post(`${URI}/api/auth/createuser`,{
-            email: formdata.email,
-            name: formdata.name,
+            email: formdata.email.toLowerCase(),
+            name: formdata.name.toLowerCase(),
             password: formdata.password
         })
     }
@@ -26,7 +26,7 @@ export default class DBService {
     static getBooklist(){
         return axios.get(`${URI}/api/library/booklist`,{
             headers:{
-                'authorization': `Bearer ${localStorage.token ? localStorage.token : ''}`
+                'authorization': `Bearer ${localStorage.getItem('user-token') ? localStorage.getItem('user-token') : ''}`
             }
         })
     }
@@ -34,7 +34,7 @@ export default class DBService {
     static getReport(){
         return axios.get(`${URI}/api/library/reports`,{
             headers:{
-                'authorization': `Bearer ${localStorage.token ? localStorage.token : ''}`
+                'authorization': `Bearer ${localStorage.getItem('user-token') ? localStorage.getItem('user-token') : ''}`
             }
         })
     }
@@ -44,7 +44,7 @@ export default class DBService {
             ...formdata
         },{
             headers:{
-                'authorization': `Bearer ${localStorage.token ? localStorage.token : ''}`
+                'authorization': `Bearer ${localStorage.getItem('user-token') ? localStorage.getItem('user-token') : ''}`
             }
         })
     }
@@ -54,7 +54,7 @@ export default class DBService {
             ...formdata
         },{
             headers:{
-                'authorization': `Bearer ${localStorage.token ? localStorage.token : ''}`
+                'authorization': `Bearer ${localStorage.getItem('user-token') ? localStorage.getItem('user-token') : ''}`
             }
         })
     }
@@ -64,7 +64,7 @@ export default class DBService {
             ...formdata
         },{
             headers:{
-                'authorization': `Bearer ${localStorage.token ? localStorage.token : ''}`
+                'authorization': `Bearer ${localStorage.getItem('user-token') ? localStorage.getItem('user-token') : ''}`
             }
         })
     }
@@ -72,7 +72,7 @@ export default class DBService {
     static deleteLibraryBook(id){
         return axios.delete(`${URI}/api/library/delete/${id}`,{
             headers:{
-                'authorization': `Bearer ${localStorage.token ? localStorage.token : ''}`
+                'authorization': `Bearer ${localStorage.getItem('user-token') ? localStorage.getItem('user-token') : ''}`
             }
         })
     }

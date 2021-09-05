@@ -1,24 +1,34 @@
 import {React} from 'react';
-import {NavLink} from 'react-router-dom'
 
-const Usernav = ({user,showAddBook,logOutUser})=>(
+const Usernav = ({user, history, showAddBook = f=>f
+    ,logOutUser=f=>f, showReports=f=>f, 
+    showHome=f=>f, showBooklist=f=>f})=>(
     <div className='user-nav'>
         <div className='user-holder'>
             <div className='text-capitalize text-right'>
-                <span className='welcome-span'>Welcome</span> {user.name} <button className='btn-1 login-btn' onclick={logOutUser}>Log Out</button> </div>
+                <span className='welcome-span'>Welcome</span> {user.name} <button className='btn-1 login-btn' onClick={logOutUser}>Log Out</button> </div>
             <div>
             {
                 user.isadmin ? 
                 <>
                 <button className="btn-1 login-btn" onClick={()=>{showAddBook()}}>Add Book</button> 
-                <NavLink className='btn ' to='/report'>Show Borrowed Books</NavLink>  
+                <button className='btn' onClick={()=>{
+                    showReports()
+                    history.push('/report')
+                }}>Show Borrowed Books</button>  
                 </>
                 :
                 <></>
                 }
-                <NavLink className='btn' to='/'>View Library</NavLink>
+                <button className='btn' onClick={()=>{
+                    showHome()
+                    history.push('/')
+                }}>View Library</button>
                 
-                <NavLink className='btn ' to='/booklist'>My Booklist</NavLink> 
+                <button className='btn' onClick={()=>{
+                    showBooklist()
+                    history.push('/booklist')
+                }}>My Booklist</button> 
                 
             </div>
         </div>

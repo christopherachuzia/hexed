@@ -21,6 +21,7 @@ router.get('/contents', async(req,res) =>{
         const search = 'search' in req.query ? req.query.search : null;
 
         const content = await getLibraryContent(db.getInstance(), search)
+        
         res.json({
             content
         })
@@ -35,13 +36,16 @@ router.get('/contents', async(req,res) =>{
 
 router.get('/reports', authenticateUser, async(req,res) =>{
     try{
+        console.log('Loading reports...')
         if(req.user_verified.isadmin){
             const reports = await getBookList({report: true},db.getInstance())
+            console.log('Returning reports...')
             res.json({
                 reports
             })
         }
         else{
+            console.log('Returning reports not allowed...')
             notAdmin(res)
         }
     }
@@ -70,18 +74,21 @@ router.get('/booklist', authenticateUser, async(req,res) =>{
 
 router.post('/borrow', authenticateUser, async (req,res) =>{
     try{
+        
        const book_borrowed = await borrowBook({...req.body},db.getInstance())
+       
+       if('error' in book_borrowed) throw new Error(book_borrowed.message)
+       
        const remainder_available = await db.getInstance().findOneLibraryBook(book_borrowed.book_id)
        
-       
-
        if(remainder_available){
             req.app.io.emit('update-client-library', {book:remainder_available})
        }
        else{
-            req.app.io.emit('remove-from-client', remainder_available._id)
+            req.app.io.emit('remove-from-client', book_borrowed.book_id)
        }
        
+       console.log(book_borrowed)
        res.json({
             book: book_borrowed
        })
@@ -96,11 +103,12 @@ router.post('/borrow', authenticateUser, async (req,res) =>{
 
 router.post('/returnbook', authenticateUser, async (req,res) =>{
     try{
+        console.log('Returning book...')
        const book_returned = await returnBook({...req.body},db.getInstance())
        req.app.io.emit('update-client-library', {book: book_returned})
-       const {bookid: _id, userid: user_id}
+       console.log('Book returned...')
        res.json({
-            book: {_id}
+            book: {_id: req.body.bookid}
        })
     }
     catch(err){
@@ -113,15 +121,17 @@ router.post('/returnbook', authenticateUser, async (req,res) =>{
 
 router.post('/addbook', authenticateUser, async (req,res) =>{
     try{
-
+        console.log('Adding book...')
         if(req.user_verified.isadmin){
             const newbook = await addBook({...req.body},db.getInstance())
             req.app.io.emit('update-client-library', {book: newbook})
+            console.log('Book added...')
             res.json({
                 book: newbook
             })
         }
         else{
+            console.log('Add book not allowed...')
             notAdmin(res)
         }
     }
@@ -135,18 +145,19 @@ router.post('/addbook', authenticateUser, async (req,res) =>{
 
 router.delete('/delete/:book', authenticateUser, async (req,res) =>{
     try{
-
+        console.log('Deleting book...')
         if(req.user_verified.isadmin){
             const book_deleted = await deleteBook(req.params.book,db.getInstance())
             
             
             req.app.io.emit('remove-from-client', req.params.book)
-            
+            console.log('Book deleted...')
             res.json({
                 book: req.params.book
             })
         }
         else{
+            console.log('Delete book not allowed...')
             notAdmin(res)
         }
         

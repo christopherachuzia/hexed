@@ -6,7 +6,8 @@ const mapStateToProps = state =>{
     return {
         screen: state.popupscreen,
         loading: state.loadinglibrary,
-        bookdata: state.borrowedreport
+        bookdata: state.borrowedreport,
+        loadreport: state.loadingreport,
     }
 }
 
