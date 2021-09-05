@@ -1,15 +1,16 @@
 import {React} from 'react'
-import '../../index.css'
 
-const searchbox = (searchBook)=>(
-    <div className='search-box'>
-        <input className='search-textfield' placeholder='Search Book...' oninput={(e)=>{
-            e.preventDefault();
-            console.log(e.target)
-            const searchdata = e.target.value
-            searchBook(searchdata)
-        }}/>
+const Searchbox = ({searchBook})=>(
+    <div className='search-nav'>
+        <div className='search-box'>
+            <input className='search-textfield' placeholder='Search Book...' onInput={(e)=>{
+                e.preventDefault();
+                console.log(e.target.value)
+                const searchdata = e.target.value
+                searchBook(searchdata)
+            }}/>
+        </div>
     </div>
 )
 
-export default searchbox
+export default Searchbox

@@ -130,7 +130,7 @@ export const borrowbook = (state = false, action) =>{
     }
 }
 
-export const loadinglibrary = (state = false, action) =>{
+export const loading = (state = false, action) =>{
     switch(action.type){
         case C.START_LOADING:
             return action.value
@@ -138,3 +138,11 @@ export const loadinglibrary = (state = false, action) =>{
     }
 }
 
+
+export const popupscreen = (state = -1, action) =>{
+    switch(action.type){
+        case C.SET_SCREEN:
+            return action.value
+        default: return state
+    }
+}

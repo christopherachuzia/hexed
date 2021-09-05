@@ -448,4 +448,17 @@ describe('Store Tester',()=>{
             })
     })
     
+    describe('#loadinglibrary() Test', function(){
+        
+        it('Should return false',  ()=>{
+                store.dispatch({
+                    type: C.START_LOADING,
+                    value: false
+                })
+
+
+                const {loading} = store.getState();
+                expect(loading).toBeFalsy()
+            })
+    })
 })

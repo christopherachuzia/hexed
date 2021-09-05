@@ -2,8 +2,10 @@ import {React} from 'react';
 import Reportbook from './reportbook'
 import Pagetemplate from '../container/pagetemplate'
 
-const reportbookholder = (bookdata, loading)=>(
-    <Pagetemplate>
+const Reportbookholder = ({bookdata, loading, screen, 
+    cancelOverlay})=>(
+
+    <Pagetemplate screen={screen} cancelOverlay={cancelOverlay}>
         {
             loading ? <h1>Loading Reports...</h1>
             :
@@ -14,4 +16,4 @@ const reportbookholder = (bookdata, loading)=>(
     </Pagetemplate>
 )
 
-export default reportbookholder
+export default Reportbookholder

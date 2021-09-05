@@ -13,25 +13,48 @@ code {
 }
 
 button{
-  font-size: .6rem;
+  font-size: .8rem;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.error-text{
+  font-size: 1.4rem;
+  margin-top: 2px;
 }
 
 .book-container{
-  box-shadow: 0px 2px 8px lightgray;
-  padding: 4px;
+  display: flex;
+  justify-content: center;
 }
 
 .book{
   background-color: white;
   list-style: none;
-  padding: 0px;
-  border : 1px solid lightgray
+  padding: 0px 5px 0px 5px;
+  border : 1px solid rgb(230, 228, 228);
+  width: 40%;
+  border-radius: 4px;
 }
 
 .book > li{
  border-bottom: 1px solid lightgray;
- padding: 2px;
- color: rgb(122, 120, 120)
+ padding: 7px;
+ color: rgb(122, 120, 120);
+ font-size: 1rem;
+}
+
+.book > li > span {
+  font-weight: bold;
+  color:gray;
+  display: inline-block;
+  width: 70px;
+  margin-right: 1.7rem
+}
+
+.small-font{
+  font-size: .7rem;
 }
 
 .borrow-btn{
@@ -39,62 +62,121 @@ button{
   color: white;
   text-align: center;
   border: rgb(43, 93, 199);
-  border-radius: 2px;
+  font-size: .75rem;
+  padding: 5px 10px;
 }
 
 .borrow-btn:hover{
   background-color: rgb(15, 74, 201);
 }
 
-.delete-btn-fill{
+.delete-btn-fill, .delete-btn-fill-1{
   background-color: rgb(199, 66, 43);
   color: white;
   text-align: center;
   border: rgb(199, 66, 43);
-  border-radius: 2px;
 }
 
-.delete-btn-fill:hover{
+.delete-btn-fill-1{
+  font-size: .75rem;
+  padding: 5px 13px;
+}
+
+.delete-btn-fill:hover, .delete-btn-fill-1:hover{
   background-color: rgb(206, 45, 17);
 }
 
+.search-nav{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: .9rem;
+}
+
 .search-box{
-  background-color: whitesmoke;
-  padding: 5px;
-  box-shadow: 0px 2px 8px lightgray;
+  width: 50%;
+  min-width: 350px;
 }
 
 .search-textfield{
   display: block;
   width: 100%;
-  padding: .375rem .75rem;
+  min-width: 350px;
+  padding: .475rem 1.5rem;
   font-size: 1.2rem;
   line-height: 1.6;
-  color: #495057;
+  color: #8b9094;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #ced4da;
-  border-radius: .25rem;
+  border: hidden;
+  border-radius: 1.5rem;
+  box-shadow: 0px 4px 15px rgb(228, 226, 226);
+  transition: .7s;
 }
 
-.flex-nav{
+input{
+  display: block;
+  min-width: 250px;
+  padding: .475rem .75rem;
+  font-size: .8rem;
+  line-height: 1.6;
+  color: #8b9094;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgb(231, 230, 230);
+  border-radius: .25rem;
+  transition: .3s;
+}
+
+.search-textfield:focus{
+  outline: none;
+  box-shadow: 0px 2px 12px rgb(198, 220, 245);
+}
+
+input:focus{
+  outline: none;
+  box-shadow: 0px 1px 5px rgb(198, 220, 245);
+}
+
+.text-center{
+    text-align: center;
+}
+
+.text-right{
+  text-align: right;
+}
+
+.visitor-nav, .user-nav{
   width: 100%;
-  padding: 5px;
   display: flex;
-  justify-content: right;
+  justify-content: flex-end;
+  margin-bottom: 1.2rem;
+}
+
+.visition-holder, .user-holder{
+  margin: 1rem 2rem 0px 0px
+}
+
+.welcome-span{
+  color: rgb(37, 37, 236);
+  font-weight: bold;
+  display: inline-block;
+  margin-right:.3rem
 }
 
 .createaccount-btn{
-  background-color: rgb(31, 212, 76);
+  background-color: rgb(36, 197, 76);
   color: white;
   text-align: center;
   border: rgb(31, 212, 76);
-  border-radius: 2px;
-  margin-right: 8px
+}
+
+.mr-1{
+  margin-right: 1.5rem
 }
 
 .createaccount-btn:hover{
-  background-color: rgb(10, 197, 57);
+  background-color: rgb(10, 175, 51);
 }
 
 
@@ -103,7 +185,7 @@ button{
   color: white;
   text-align: center;
   border: rgb(31, 140, 212);
-  border-radius: 2px;
+  
 }
 
 .login-btn:hover{
@@ -125,8 +207,20 @@ button{
 }
 
 .content-holder{
+  margin-top: 1rem; 
+  padding-top: 9px;
+}
+
+.overlay-content{
+  padding: 10px
+}
+
+.overlay-btn-holder{
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 7px 0px 7px;
   margin-top: 1rem;
-  padding-top: 9px
+  margin-bottom: .8rem
 }
 
 .overlay{
@@ -141,6 +235,30 @@ button{
 
 .center-fixed-div{
   background-color: white;
-  width:400px;
-  padding: 5px;
+  border-radius: 6px;
+  width:300px;
 }
+
+.btn{
+  font-size: .75rem;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: .6rem .42rem .5rem .42rem;
+  text-decoration: none;
+  border-bottom: 2px solid rgb(31, 140, 212);
+  color: rgb(31, 140, 212);
+}
+
+.btn-1{
+  border-color: rgb(31, 140, 212);
+  color:white;
+  border-radius: 5px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: .6rem .42rem .5rem .42rem;
+  text-decoration: none;
+}
+
+

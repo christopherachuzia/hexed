@@ -5,13 +5,13 @@ import library from './components/container/library'
 import reports from './components/container/reports'
 import ProtectedRoute from './components/customroutes'
 
-
 function App() {
+
   return (
 
     <Switch>
       <Route exact path='/' component={library}></Route>
-      <Route exact path='/booklist' component={booklist}></Route>
+      <ProtectedRoute path='/booklist' component={booklist}></ProtectedRoute>
       <ProtectedRoute path='/report' component={reports}/>
     </Switch>
   );

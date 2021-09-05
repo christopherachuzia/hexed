@@ -11,6 +11,10 @@ export function initializeSocket(IPAddress){
     }
 }
 
+export function getSocket(){
+    return socket
+}
+
 export function disconnect(){
     socket = undefined;
 }

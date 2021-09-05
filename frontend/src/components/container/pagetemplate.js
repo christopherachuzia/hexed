@@ -1,10 +1,13 @@
 import {React} from 'react'
-import Header from './header'
 import Popup from '../ui/popup'
-import '../../index.css'
+import Header from './header'
 
-const pagetemplate = (children) =>(
+const Pagetemplate = ({children, screen, cancelOverlay}) =>(
     <div>
+        {
+            screen !== -1 ? 
+            <Popup screen={screen} cancelOverlay={cancelOverlay}/> : <></>
+        }
         <Header/>
         <div className='content-holder'>
             {children}
@@ -13,4 +16,4 @@ const pagetemplate = (children) =>(
     </div>
 )
 
-export default pagetemplate
+export default Pagetemplate

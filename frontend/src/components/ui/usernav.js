@@ -1,27 +1,28 @@
 import {React} from 'react';
-import '../../index.css'
 import {NavLink} from 'react-router-dom'
 
-const usernav = ({name,isadmin},showAddBook,logOutUser)=>{
-    <div className='flex-nav'>
-        <div>
-            <span className='text-capitalize'>{name}</span>
-            <div className='mt-1'>
-                <NavLink className='plain-btn-underlined' to='/books'>View Library</NavLink>
-                {
-                isadmin ? 
+const Usernav = ({user,showAddBook,logOutUser})=>(
+    <div className='user-nav'>
+        <div className='user-holder'>
+            <div className='text-capitalize text-right'>
+                <span className='welcome-span'>Welcome</span> {user.name} <button className='btn-1 login-btn' onclick={logOutUser}>Log Out</button> </div>
+            <div>
+            {
+                user.isadmin ? 
                 <>
-                <NavLink className='createaccount-btn' to='/report'>Show Borrowed Books</NavLink>  
-                <button onclick={showAddBook}>Add Book</button> 
+                <button className="btn-1 login-btn" onClick={()=>{showAddBook()}}>Add Book</button> 
+                <NavLink className='btn ' to='/report'>Show Borrowed Books</NavLink>  
                 </>
                 :
                 <></>
                 }
-                <NavLink className='login-btn' to='/booklist'>My Booklist</NavLink> 
-                <button className='plain-btn-underlined' onclick={logOutUser}>Log Out</button> 
+                <NavLink className='btn' to='/'>View Library</NavLink>
+                
+                <NavLink className='btn ' to='/booklist'>My Booklist</NavLink> 
+                
             </div>
         </div>
     </div>
-}
+)
 
-export default usernav
+export default Usernav

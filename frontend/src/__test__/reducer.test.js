@@ -12,7 +12,8 @@ import {
     startdelete,
     returnbook,
     borrowbook,
-    startcreateaccount
+    startcreateaccount,
+    loading
 } from '../store/reducer'
 
 import C from '../store/actiontype';
@@ -455,7 +456,25 @@ describe('Testing Reducers', function(){
         })
     })
     
-    
+    describe('#loading() Test',function(){
+        it('Should return false',()=>{
+            const action = {
+                type: C.START_LOADING,
+                value: false
+            }
+
+            expect(loading(true,action)).toBeFalsy()
+        })
+
+        it('Should return true',()=>{
+            const action = {
+                type: C.START_LOADING,
+                value: true
+            }
+
+            expect(loading(false,action)).toBeTruthy()
+        })
+    })
 })
 
 

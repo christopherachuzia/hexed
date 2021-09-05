@@ -79,7 +79,7 @@ router.post('/borrow', authenticateUser, async (req,res) =>{
             req.app.io.emit('update-client-library', {book:remainder_available})
        }
        else{
-            req.app.io.emit('remove-from-client', {book: remainder_available})
+            req.app.io.emit('remove-from-client', remainder_available._id)
        }
        
        res.json({

@@ -2,8 +2,10 @@ import {React} from 'react';
 import Borrowedbook from './borrowedbook'
 import Pagetemplate from '../container/pagetemplate'
 
-const booklistholder = (bookdata, user, loading, returnBook)=>(
-    <Pagetemplate>
+    const Booklistholder = ({bookdata, screen, user, 
+        loading, returnBook, cancelOverlay
+    })=>(
+    <Pagetemplate screen={screen} cancelOverlay={cancelOverlay}>
         {
             loading ? <h1>Loading My Booklist...</h1>
             :
@@ -14,4 +16,4 @@ const booklistholder = (bookdata, user, loading, returnBook)=>(
     </Pagetemplate>
 )
 
-export default booklistholder
+export default Booklistholder

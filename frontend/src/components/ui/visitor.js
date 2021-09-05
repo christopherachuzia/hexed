@@ -1,13 +1,12 @@
 import {React} from 'react';
-import '../../index.css'
 
-const visitor = (showCreateAccount,showLogin)=>(
-    <div className='flex-nav'>
-        <div>
-            <button className='createaccount-btn' onclick={showCreateAccount}>Create Account</button>
-            <button className='login-btn' onclick={showLogin}>Login</button>
+const Visitor = ({showCreateAccount =f=>f,showLogin = f=>f})=>(
+    <div className='visitor-nav'>
+        <div className='visition-holder'>
+            <button className='createaccount-btn mr-1' onClick={()=>{showCreateAccount()}}>Create Account</button>
+            <button className='login-btn' onClick={()=>{showLogin()}}>Login</button>
         </div>
     </div>
 )
 
-export default visitor
+export default Visitor

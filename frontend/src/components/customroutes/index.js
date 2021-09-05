@@ -7,10 +7,10 @@ const Customroute = ({component, user, path})=>(
         {
             path === '/report' && user.isadmin ?
             <Route path={path} component={component}></Route>
-            : path === '/booklist' && localStorage.getItem('user-token') ?
+            : path === '/booklist' && user.name ?
             <Route path={path} component={component}></Route> 
             :
-            <Redirect from={path} to='/books'></Redirect>
+            <Redirect from={path} to='/'></Redirect>
         }
     </>
 )

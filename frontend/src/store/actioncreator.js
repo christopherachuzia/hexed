@@ -116,3 +116,10 @@ export const logOutUser = ()=>{
     }
 }
 
+export const setScreen = (value)=>{
+    return{
+        type: C.SET_SCREEN,
+        value
+    }
+}
+

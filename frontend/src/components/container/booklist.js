@@ -8,6 +8,7 @@ import C from '../../store/actiontype'
 
 const mapStateToProps = state =>{
     return {
+        screen: state.popupscreen,
         loading: state.loadinglibrary,
         user: state.user,
         bookdata: state.booklist
@@ -28,7 +29,13 @@ const mapDispatchToProps = dispatch=>{
                 alert(err.message)
             }
             
-        }
+        },
+        cancelOverlay: ()=>{
+            dispatch({
+                type:C.SET_SCREEN,
+                value: -1
+            })
+        },
     }
 }
 

@@ -1,23 +1,23 @@
 import {React} from 'react';
-import '../../index.css'
 
 import Searchbox from './searchbox';
 import Usernav from './usernav';
 import Visitor from './visitor';
 import { withRouter } from 'react-router';
 
-const navcontent = (location, user,showCreateAccount,showLogin,showAddBook,logOutUser,searchBook)=>(
+const Navcontent = ({location, user,showCreateAccount,showLogin,showAddBook,logOutUser,searchBook})=>(
     <div>
         <div>
             {
-                localStorage['user-token'] ? 
+                // localStorage['user-token'] ?
+                user.name ?
                 <Usernav user={user} showAddBook={showAddBook} logOutUser={logOutUser}/> 
                 : <Visitor showCreateAccount={showCreateAccount} showLogin={showLogin}/>
             }
         </div>
         <>
         {
-           location.pathname === '/books' ?
+           location.pathname === '/' ?
            <Searchbox className='mt-1' searchBook={searchBook}/> :
            <></>
         }
@@ -26,4 +26,4 @@ const navcontent = (location, user,showCreateAccount,showLogin,showAddBook,logOu
     </div>
 )
 
-export default withRouter(navcontent)
+export default withRouter(Navcontent)

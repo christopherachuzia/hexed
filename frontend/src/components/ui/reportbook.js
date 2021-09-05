@@ -1,13 +1,12 @@
 import {React} from 'react'
-import '../../index.css'
 
-const reportbook = ({_id, users})=>(
+const Reportbook = ({bookreport})=>(
     <div className='book-container'>
         <ul className='book'>
-            <li className='text-capitalized'>Title: {_id}</li>
-            <li>Borrowed By: {users} Users</li>
+            <li className='text-capitalized'>Title: {bookreport._id}</li>
+            <li>Borrowed By: {bookreport.users} Users</li>
         </ul>
     </div>
 )
 
-export default reportbook
+export default Reportbook

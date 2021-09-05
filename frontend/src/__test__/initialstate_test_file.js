@@ -11,5 +11,9 @@ const state = {
     startdelete: false,
     startcreateaccount: false,
     borrowbook: false,
-    showcreateaccount: false
+    showcreateaccount: false,
+    loading: true,
+    popupscreen: -1
 }
+
+export default state

@@ -1,21 +1,24 @@
 import {React} from 'react'
-import '../../index.css'
 
-const book = ({_id, book_title, amount}, {email,isadmin}, borrowBook = f => f)=>(
+const Book = ({book, user, borrowBook = f => f})=>(
     <div className='book-container'>
         <ul className='book'>
-            {
-                isadmin ? <li><button className='delete-btn-fill'>Delete</button></li> : <></>
-            }
-            <li className='text-capitalize'>Title: {book_title}</li>
-            <li className='text-capitalize'>Copies: {amount}</li>
+            
+            <li className='text-capitalize'><span>Title:</span> {book.book_title}</li>
+            <li className='text-capitalize'><span className='small-font' >Available copies:</span> <b>{book.amount}</b></li>
             <li>
-                <button className='borrow-btn' onclick ={()=> {
-                    borrowBook(email,_id)
-                }}>Borrow Book</button>
+                <div className='overlay-btn-holder'>
+                    <button className='borrow-btn' onclick ={()=> {
+                        borrowBook(user.email,book._id)
+                    }}>Borrow Book</button>
+
+                    {
+                        user.isadmin ? <li><button className='delete-btn-fill-1'>Delete</button></li> : <></>
+                    }
+                </div>
             </li>
         </ul>
     </div>
 )
 
-export default book
+export default Book
