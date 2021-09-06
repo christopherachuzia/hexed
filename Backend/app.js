@@ -34,20 +34,10 @@ async function start(){
             console.log(`App listening on port ${PORT}`);
         })
 
-        const io = require('socket.io')(http_server,{
-            path: '/socket.io'
-        })
+        const io = require('socket.io')(http_server)
         
         io.on('connection',(socket)=>{
             console.log('connected', socket.id)
-            socket.emit('welcome',1)
-            socket.on('refresh',(data)=>{
-                console.log('Hii there ',data)
-            })
-
-            socket.on("disconnect",()=>{
-                console.log('client '+socket.id+' disconnected')
-            })
         })
 
         app.io = io;

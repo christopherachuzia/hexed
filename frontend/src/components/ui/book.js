@@ -1,6 +1,6 @@
 import {React} from 'react'
 
-const Book = ({book, user, borrowBook = f => f})=>(
+const Book = ({book, user, borrowBook = f => f, deleteBook=f=>f})=>(
     <div className='book-container'>
         <ul className='book'>
             
@@ -13,7 +13,11 @@ const Book = ({book, user, borrowBook = f => f})=>(
                     }}>Borrow Book</button>
 
                     {
-                        user.isadmin ? <button className='delete-btn-fill-1'>Delete</button> : <></>
+                        user.isadmin ? <button className='delete-btn-fill-1'
+                        onClick={(e)=>{
+                            e.preventDefault();
+                            deleteBook(book._id)
+                        }}>Delete</button> : <></>
                     }
                 </div>
             </li>

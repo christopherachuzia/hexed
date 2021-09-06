@@ -36,16 +36,13 @@ router.get('/contents', async(req,res) =>{
 
 router.get('/reports', authenticateUser, async(req,res) =>{
     try{
-        console.log('Loading reports...')
         if(req.user_verified.isadmin){
             const reports = await getBookList({report: true},db.getInstance())
-            console.log('Returning reports...')
             res.json({
                 reports
             })
         }
         else{
-            console.log('Returning reports not allowed...')
             notAdmin(res)
         }
     }
@@ -88,7 +85,6 @@ router.post('/borrow', authenticateUser, async (req,res) =>{
             req.app.io.emit('remove-from-client', book_borrowed.book_id)
        }
        
-       console.log(book_borrowed)
        res.json({
             book: book_borrowed
        })
@@ -103,15 +99,15 @@ router.post('/borrow', authenticateUser, async (req,res) =>{
 
 router.post('/returnbook', authenticateUser, async (req,res) =>{
     try{
-        console.log('Returning book...')
-       const book_returned = await returnBook({...req.body},db.getInstance())
-       req.app.io.emit('update-client-library', {book: book_returned})
-       console.log('Book returned...')
-       res.json({
-            book: {_id: req.body.bookid}
-       })
+        const book_returned = await returnBook({...req.body},db.getInstance())
+        
+        req.app.io.emit('add-client-library', {book: book_returned})
+        res.json({
+                book: {_id: `${req.body.bookid}_${req.body.userid}`}
+        })
     }
     catch(err){
+        console.log(err)
         res.json({
             error: true,
             message: err.message
@@ -121,11 +117,10 @@ router.post('/returnbook', authenticateUser, async (req,res) =>{
 
 router.post('/addbook', authenticateUser, async (req,res) =>{
     try{
-        console.log('Adding book...')
         if(req.user_verified.isadmin){
             const newbook = await addBook({...req.body},db.getInstance())
-            req.app.io.emit('update-client-library', {book: newbook})
-            console.log('Book added...')
+            req.app.io.emit('add-client-library', {book: newbook})
+            
             res.json({
                 book: newbook
             })
@@ -151,7 +146,7 @@ router.delete('/delete/:book', authenticateUser, async (req,res) =>{
             
             
             req.app.io.emit('remove-from-client', req.params.book)
-            console.log('Book deleted...')
+            
             res.json({
                 book: req.params.book
             })

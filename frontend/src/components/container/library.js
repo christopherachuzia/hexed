@@ -6,7 +6,9 @@ import {
     loadLibraryContent,
     createNewUser,
     setScreen,
-    loginUser
+    loginUser,
+    deleteFromLibrary,
+    addToLibraryBook
 } from '../../store/actioncreator'
 import C from '../../store/actiontype'
 
@@ -43,7 +45,39 @@ const mapDispatchToProps = dispatch=>{
             }
             
         },
+
+        addNewBook: async (title,amount)=>{
+            try{
+                
+                const {data: result} = await dispatch(addToLibraryBook(title,amount))
+
+                if('auth' in result){
+                    return new Error('Log in or Create Account to add book')
+                }
+                if('error' in result ){
+                    throw new Error(result.message)
+                }
+                dispatch(setScreen(-1))
+                alert('New '+result.book.book_title+' added')
+            }
+            catch(err){
+                alert(err.message)
+            }
+        },
         
+        deleteBook: async (id)=>{
+            try{
+                const {data: result} = await dispatch(deleteFromLibrary(id))
+                if('error' in result){
+                    throw new Error(result.message)
+                }
+                alert('Book delete')
+            }
+            catch(err){
+                alert(err.message)
+            }
+        },
+
         cancelOverlay: ()=>{
             dispatch({
                 type:C.SET_SCREEN,
@@ -116,7 +150,6 @@ const mapDispatchToProps = dispatch=>{
                     value: false
                 })
             }catch(err){
-                console.log('err here')
                 dispatch({
                     type: C.LOAD_LIBRARY,
                     value: [{
@@ -130,22 +163,6 @@ const mapDispatchToProps = dispatch=>{
                 alert(err.message)
             }
         },
-
-        updateBook: (book, action)=>{
-            if(action === 'update'){
-                dispatch({
-                    type: C.UPDATE_BOOK,
-                    value: book
-                })
-            }
-            else{
-
-                dispatch({
-                    type: C.DELETE_BOOK,
-                    value: {_id:book}
-                })
-            }
-        }
     }
 }
 

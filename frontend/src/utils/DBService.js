@@ -50,7 +50,7 @@ export default class DBService {
     }
 
     static returnBorrowedBook(formdata){
-        return axios.post(`${URI}/api/library/retunbook`,{
+        return axios.post(`${URI}/api/library/returnbook`,{
             ...formdata
         },{
             headers:{

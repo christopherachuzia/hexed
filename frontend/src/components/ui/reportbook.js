@@ -1,10 +1,10 @@
 import {React} from 'react'
 
-const Reportbook = ({bookreport})=>(
+const Reportbook = ({book})=>(
     <div className='book-container'>
         <ul className='book'>
-            <li className='text-capitalized'>Title: {bookreport._id}</li>
-            <li>Borrowed By: {bookreport.users} Users</li>
+            <li className='text-capitalize'><span>Title:</span> {book.titles[0]}</li>
+            <li><span className='small-font'>Borrowed By:</span> <b>{book.users}</b> {book.users > 1 ? 'Users':'User'}</li>
         </ul>
     </div>
 )

@@ -5,13 +5,15 @@ import Addbook from './addbook'
 
 import '../../index.css'
 
-const Popup = ({screen, cancelOverlay, createUser, loginUser})=>(
+const Popup = ({screen, cancelOverlay, createUser, loginUser,
+addNewBook})=>(
     <div className='overlay'>
         <div className='center-fixed-div'>
             {
                 screen === 0 ?
                 <Login cancelOverlay={cancelOverlay} loginUser={loginUser}/> : screen === 1 ?
-                <Createaccount cancelOverlay={cancelOverlay} createUser={createUser}/> : screen === 2 ? <Addbook cancelOverlay={cancelOverlay} /> : <></>
+                <Createaccount cancelOverlay={cancelOverlay} createUser={createUser}/> : screen === 2 
+                ? <Addbook cancelOverlay={cancelOverlay} addNewBook={addNewBook}/> : <></>
             }
         </div>
     </div>

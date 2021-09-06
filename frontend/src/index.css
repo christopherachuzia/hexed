@@ -29,6 +29,18 @@ button{
   justify-content: center;
 }
 
+.heading{
+  background-color: whitesmoke;
+  border-radius: 15px;
+  width: 50%;
+  min-width: 400px;
+  padding: .7rem 0px .7rem 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  box-shadow: 0px 4px 15px rgb(228, 226, 226);
+}
+
 .book{
   background-color: white;
   list-style: none;
@@ -66,8 +78,17 @@ button{
   padding: 5px 10px;
 }
 
-.borrow-btn:hover{
-  background-color: rgb(15, 74, 201);
+.return-btn{
+  background-color: rgb(40, 168, 36);
+  color: white;
+  text-align: center;
+  border: rgb(40, 168, 36);
+  color: white;
+  font-size: .75rem;
+  padding: 5px 10px;
+}
+.return-btn:hover{
+  background-color: rgb(24, 145, 20);
 }
 
 .delete-btn-fill, .delete-btn-fill-1{

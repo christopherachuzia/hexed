@@ -6,10 +6,35 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom'
 import {Provider} from 'react-redux'
 import storeFactory from './store'
+import {socket} from './utils/socketclient'
+import C from './store/actiontype'
 
 const store = storeFactory()
 
+socket.on('update-client-library',({book})=>{
+    store.dispatch({
+      type: C.UPDATE_BOOK,
+      value: book
+    })
+})
+    
+socket.on('remove-from-client', _id =>{
+    store.dispatch({
+        type: C.DELETE_BOOK,
+        value: {_id}
+    })
+})
 
+socket.on('add-client-library', ({book}) =>{
+  store.dispatch({
+      type: C.DELETE_BOOK,
+      value: {_id:book._id}
+  })
+  store.dispatch({
+    type: C.ADD_BOOK,
+    value: book
+  })
+})
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

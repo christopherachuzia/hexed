@@ -3,10 +3,10 @@ import {React} from 'react'
 const Borrowedbook = ({book, user, returnBook = f=>f})=>(
     <div className='book-container'>
         <ul className='book'>
-            <li>Title: {book.book_title}</li>
+            <li className='text-capitalize'><span>Title:</span> {book.book_title}</li>
             <li>
-                <button className='borrow-btn' onclick ={()=>{
-                    returnBook(user.email,book._id)
+                <button className='return-btn' onClick ={()=>{
+                    returnBook(user.email,book.book_id)
                 }}>Return Book</button>
             </li>
         </ul>

@@ -36,14 +36,22 @@ export const createNewUser = ({email, name, password})=>{
 }
 
 export const getUserBooklist = ()=>{
-    return ()=>{
+    return (dispatch)=>{
+        dispatch({
+            type: C.START_BOOKLIST_LOAD,
+            value: false
+        })
         return DBService.getBooklist()
     }
 }
 
 
 export const getBorrowReport = ()=>{
-    return ()=>{
+    return (dispatch)=>{
+        dispatch({
+            type: C.START_REPORT_LOAD,
+            value: false
+        })
         return DBService.getReport()
     }
 }
@@ -61,11 +69,7 @@ export const borrowLibraryBook = (userid, bookid)=>{
 
 
 export const returnLibraryBook = (userid, bookid)=>{
-    return (dispatch)=>{
-        dispatch({
-            type: C.START_RETURN,
-            value: true
-        })
+    return ()=>{
         return DBService.returnBorrowedBook({userid, bookid})
     }
 }
@@ -79,11 +83,8 @@ export const addToLibraryBook = (title, amount)=>{
 
 
 export const deleteFromLibrary = id =>{
-    return (dispatch)=>{
-        dispatch({
-            type: C.START_DELETE,
-            value: true
-        })
+    return ()=>{
+        
         return DBService.deleteLibraryBook(id)
     }
 }
